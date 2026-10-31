@@ -1,0 +1,51 @@
+# Publishes the site to GitHub Pages and rebuilds sitemap.xml from every .html page on each push.
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history, so each page gets its real last-changed date
+
+      - name: Build site with a fresh sitemap
+        run: |
+          mkdir _site
+          rsync -a --exclude .git --exclude .github --exclude _site ./ _site/
+          base="https://$(tr -d '[:space:]' < CNAME)"
+          {
+            echo '<?xml version="1.0" encoding="UTF-8"?>'
+            echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+            git ls-files '*.html' | sort | while read -r f; do
+              case "$f" in 404.html|*/404.html) continue ;; esac
+              grep -qiE '<meta[^>]+noindex' "$f" && continue   # pages marked noindex stay out
+              path="/${f%index.html}"                            # folder/index.html -> folder/
+              lastmod=$(git log -1 --format=%cs -- "$f")
+              echo "  <url><loc>${base}${path}</loc><lastmod>${lastmod}</lastmod></url>"
+            done
+            echo '</urlset>'
+          } > _site/sitemap.xml
+          cat _site/sitemap.xml
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+      - id: deployment
+        uses: actions/deploy-pages@v4
