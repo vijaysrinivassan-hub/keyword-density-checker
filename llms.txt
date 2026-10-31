@@ -21,6 +21,7 @@
 ## Pages
 
 - [Keyword density checker](https://keyworddensitychecker.co/#checker): the tool itself
+- [Internal link checker](https://keyworddensitychecker.co/internal-link-checker/): every internal and external link on a page, where it sits (body, navigation, header, footer, sidebar), its anchor text, rel attributes, and linking issues such as generic anchors, empty links and nofollow on internal links
 - [What is keyword density and what is a good number](https://keyworddensitychecker.co/#ideal): definition, both formulas, working ranges
 - [How we count](https://keyworddensitychecker.co/#method): tokenising, phrase and privacy rules
 - [FAQ](https://keyworddensitychecker.co/#faq): ideal density, keyword stuffing, stop words, limits, privacy

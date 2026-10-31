@@ -1,0 +1,944 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Internal Link Checker: Every Internal and External Link, with Anchor Text</title>
+<meta name="description" content="Free internal link checker. Enter a URL or paste HTML to see every internal and external link on the page, where it sits, its anchor text, nofollow tags and linking issues.">
+<link rel="canonical" href="https://keyworddensitychecker.co/internal-link-checker/">
+<meta property="og:title" content="Internal Link Checker">
+<meta property="og:description" content="See every internal and external link on a page, where it sits, and the anchor text behind it.">
+<meta property="og:type" content="website">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"WebApplication","name":"Internal Link Checker","url":"https://keyworddensitychecker.co/internal-link-checker/","applicationCategory":"SEO tool","operatingSystem":"Any (runs in the browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Keyword Density Checker","item":"https://keyworddensitychecker.co/"},{"@type":"ListItem","position":2,"name":"Internal Link Checker","item":"https://keyworddensitychecker.co/internal-link-checker/"}]},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What is an internal link?","acceptedAnswer":{"@type":"Answer","text":"An internal link points to another page on the same website, like a blog post linking to a product page. An external link points to a different website."}},
+{"@type":"Question","name":"How many internal links should a page have?","acceptedAnswer":{"@type":"Answer","text":"There is no fixed number. Most well-linked articles have a handful of contextual internal links in the body text, each pointing to a page that genuinely helps the reader, plus the site's navigation."}},
+{"@type":"Question","name":"Does this check whether links are broken?","acceptedAnswer":{"@type":"Answer","text":"No. It lists and classifies every link on the page and its anchor text. It does not visit each linked page, so it can't report status codes."}},
+{"@type":"Question","name":"Is the page I check stored?","acceptedAnswer":{"@type":"Answer","text":"No. Pasted HTML is analysed in your browser. A URL is fetched through a public page reader so the browser can read it, then analysed in your browser."}}
+]}
+]}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#141416; --ink-2:#1c1c1f; --ink-3:#0f0f11;
+  --fg:#0b0b0d; --text:#262626; --muted:#404040; --muted-2:#737373; --faint:#a3a3a3;
+  --line:#e5e5e5; --line-2:#d4d4d4; --soft:#f5f5f5; --soft-2:#fafafa; --white:#fff;
+  --signal:#c53a15; --signal-hi:#ff6b42; --signal-tint:rgba(197,58,21,.06); --signal-ring:rgba(197,58,21,.4);
+  --amber:#ffb33e; --green:#1f9d55; --green-hi:#3ccf7e; --red:#e5484d;
+  --r-card:0; --r-opt:0; --r-btn:0;
+  --shadow-card:0 24px 60px -30px rgba(20,20,22,.4);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.1),0 1px 2px -1px rgba(0,0,0,.1);
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.5;color:var(--fg);background:var(--white);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+.wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- header ---------- */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(20,20,22,.86);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
+.hdr .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;color:#fff;font-weight:800;font-size:12.5px;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
+.logo svg{width:30px;height:22px;flex-shrink:0}
+.nav{display:flex;align-items:center;gap:2px}
+.nav>a,.nav .dd>button{font-size:14px;font-weight:500;color:rgba(255,255,255,.72);padding:7px 12px;border-radius:0;transition:.15s;display:flex;align-items:center;gap:4px}
+.nav>a:hover,.nav .dd>button:hover,.nav .dd.open>button{color:#fff;background:rgba(255,255,255,.1)}
+.dd{position:relative}
+.dd svg{width:12px;height:12px;opacity:.7}
+.dd-menu{position:absolute;top:calc(100% + 8px);left:-8px;width:300px;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:0;box-shadow:0 24px 60px -20px rgba(20,20,22,.45);padding:8px;display:none}
+.dd.open .dd-menu{display:block}
+.dd-menu a{display:flex;gap:12px;padding:10px;border-radius:0;color:var(--fg)}
+.dd-menu a:hover{background:var(--soft)}
+.dd-menu .ic{width:34px;height:34px;border-radius:0;background:var(--soft);display:grid;place-items:center;flex-shrink:0;color:var(--text)}
+.dd-menu .ic svg{width:17px;height:17px;opacity:1}
+.dd-menu b{display:block;font-size:14px;font-weight:600}
+.dd-menu span{display:block;font-size:12.5px;color:var(--muted-2);line-height:1.35}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:600;border-radius:0;padding:0 20px;height:44px;white-space:nowrap;transition:.15s}
+.btn svg{width:16px;height:16px}
+.btn-signal{background:var(--signal);color:#fff}
+.btn-signal:hover{background:#ad3212}
+.btn-ghost-dark{color:#fff;border:1px solid rgba(255,255,255,.18)}
+.btn-ghost-dark:hover{background:rgba(255,255,255,.08)}
+.btn-sm{height:38px;padding:0 16px}
+.menu-btn{display:none;color:#fff;width:40px;height:40px;border-radius:0;place-items:center}
+.menu-btn svg{width:22px;height:22px}
+
+/* ---------- hero ---------- */
+.hero{background:var(--ink);color:#fff;padding:100px 0 84px;position:relative}
+.hero h1{font-size:clamp(28px,3.4vw,40px);font-weight:700;line-height:1.1;letter-spacing:-.03em}
+.hero p.lead{font-size:16px;color:rgba(255,255,255,.62);margin-top:8px;text-wrap:pretty}
+.hero-row{display:flex;justify-content:space-between;align-items:flex-start;gap:32px}
+.hero-main{min-width:0}
+.peek{flex:0 0 330px;display:flex;flex-direction:column;gap:8px;padding:14px 16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);color:#fff;transition:border-color .15s,background .15s}
+.peek:hover{border-color:var(--signal-hi);background:rgba(255,107,66,.08)}
+.peek-eb{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--signal-hi)}
+.peek-q{font-size:14.5px;font-weight:600;line-height:1.35}
+.peek-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1)}
+.peek-stats span{padding:6px 0;font-size:11.5px;color:rgba(255,255,255,.5);display:flex;flex-direction:column}
+.peek-stats span+span{padding-left:10px;border-left:1px solid rgba(255,255,255,.1)}
+.peek-stats b{font-size:18px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;line-height:1.2}
+.peek-go{font-size:13px;font-weight:600;color:var(--signal-hi)}
+.progress{margin-top:10px}
+.pg-top{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.pg-top b{font-variant-numeric:tabular-nums;color:var(--fg);font-weight:600}
+.pg-track{height:6px;background:var(--soft)}
+.pg-track i{display:block;height:100%;width:0;background:var(--signal);transition:width .12s linear}
+
+/* ---------- checker ---------- */
+.checker{background:var(--soft-2);padding:0 0 96px}
+.checker .grid{display:grid;grid-template-columns:minmax(0,1fr) 384px;gap:24px;align-items:start;margin-top:-52px;position:relative}
+.card{background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:0;box-shadow:var(--shadow-sm);padding:28px}
+.step{font-size:15px;font-weight:600;color:var(--fg);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.step small{font-weight:400;color:var(--muted-2);font-size:13px}
+.blk+.blk{margin-top:28px}
+.seg{display:inline-flex;background:var(--soft);border-radius:0;padding:4px;gap:2px;flex-wrap:wrap}
+.seg button{font-size:13.5px;font-weight:500;color:var(--muted);padding:7px 14px;border-radius:0;transition:.15s;white-space:nowrap}
+.seg button:hover{color:var(--fg)}
+.seg button.on{background:#fff;color:var(--fg);box-shadow:var(--shadow-sm);font-weight:600}
+.seg button .ct{font-size:11.5px;color:var(--faint);margin-left:4px;font-weight:500}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.tb-actions{display:flex;gap:6px;flex-wrap:wrap}
+.chip-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text);border:1px solid var(--line);border-radius:0;padding:6px 12px;background:#fff;transition:.15s}
+.chip-btn:hover{border-color:var(--line-2);background:var(--soft-2)}
+.chip-btn svg{width:14px;height:14px}
+textarea,.inp{width:100%;border:1px solid var(--line-2);border-radius:0;background:#fff;padding:12px 14px;font-size:15px;line-height:1.55;outline:none;transition:border-color .15s,box-shadow .15s}
+textarea:focus,.inp:focus{border-color:var(--signal);box-shadow:0 0 0 3px rgba(197,58,21,.12)}
+textarea{min-height:260px;resize:vertical;font-size:14.5px}
+.inp{padding:10px 12px;font-size:14.5px}
+.url-row{display:flex;gap:8px}
+.url-row .inp{flex:1}
+.btn-dark{background:var(--ink);color:#fff;border-radius:0;padding:0 18px;font-size:14px;font-weight:600;white-space:nowrap}
+.btn-dark:hover{background:#2a2a2e}
+.btn-dark:disabled{opacity:.5;cursor:wait}
+.note{font-size:12.5px;color:var(--muted-2);margin-top:8px;line-height:1.45}
+.note.err{color:var(--red)}
+.note.ok{color:var(--green)}
+.fetched{margin-top:12px;border:1px solid var(--line);border-radius:0;background:var(--soft-2);padding:12px 14px;font-size:13.5px;display:none}
+.fetched.show{display:block}
+.fetched b{display:block;font-weight:600;color:var(--fg);margin-bottom:2px}
+.fetched span{color:var(--muted-2)}
+.kw-grid{display:grid;grid-template-columns:1fr 1.4fr 170px;gap:12px}
+.fld label{display:block;font-size:12.5px;font-weight:500;color:var(--muted);margin-bottom:6px}
+.range-in{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted-2)}
+.range-in .inp{width:64px;text-align:center;padding:10px 6px}
+details.settings{margin-top:16px;border:1px solid var(--line);border-radius:0}
+details.settings summary{list-style:none;cursor:pointer;padding:12px 16px;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+details.settings summary::-webkit-details-marker{display:none}
+details.settings summary span{font-size:12.5px;font-weight:400;color:var(--muted-2)}
+details.settings[open] summary{border-bottom:1px solid var(--line)}
+.set-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 24px;padding:16px}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13.5px;color:var(--text)}
+.opt small{display:block;font-size:12px;color:var(--muted-2)}
+.opt select,.opt input[type=number]{border:1px solid var(--line-2);border-radius:0;padding:5px 8px;font-size:13px;background:#fff;max-width:170px}
+.opt input[type=number]{width:64px}
+.switch{position:relative;width:36px;height:20px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0;position:absolute}
+.switch span{position:absolute;inset:0;background:var(--line-2);border-radius:0;transition:.15s}
+.switch span::after{content:"";position:absolute;width:16px;height:16px;left:2px;top:2px;background:#fff;border-radius:0;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.switch input:checked+span{background:var(--signal)}
+.switch input:checked+span::after{transform:translateX(16px)}
+.switch input:focus-visible+span{outline:2px solid var(--signal);outline-offset:2px}
+.set-full{grid-column:1/-1}
+.set-full .inp{margin-top:6px;font-size:13.5px}
+.rtabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:18px;overflow-x:auto;scrollbar-width:none}
+.rtabs::-webkit-scrollbar{display:none}
+.rtabs button{font-size:14px;font-weight:500;color:var(--muted-2);padding:10px 14px;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.rtabs button:hover{color:var(--fg)}
+.rtabs button.on{color:var(--fg);border-bottom-color:var(--signal);font-weight:600}
+.pane{display:none}
+.pane.on{display:block}
+.empty{padding:36px 16px;text-align:center;color:var(--muted-2);font-size:14px;border:1px dashed var(--line-2);border-radius:0}
+.tbl-tools{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.search{position:relative}
+.search input{padding-left:32px;width:220px}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--faint)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-2);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;user-select:none}
+.tbl th[data-sort]{cursor:pointer}
+.tbl th[data-sort]:hover{color:var(--fg)}
+.tbl th .arr{color:var(--signal)}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--soft);vertical-align:middle}
+.tbl td.num,.tbl th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl td.rank{color:var(--faint);width:36px;font-variant-numeric:tabular-nums}
+.tbl tbody tr{cursor:pointer;transition:background .1s}
+.tbl tbody tr:hover{background:var(--soft-2)}
+.tbl tbody tr.sel{background:var(--signal-tint)}
+.tbl tbody tr.sel td:first-child{box-shadow:inset 2px 0 0 var(--signal)}
+.tbl .kw{font-weight:500;color:var(--fg);word-break:break-word}
+.bar{width:22%;min-width:70px}
+.bar i{display:block;height:6px;border-radius:0;background:var(--ink);min-width:2px}
+tr.sel .bar i{background:var(--signal)}
+.badge{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.04em;padding:1px 6px;border-radius:0;margin-left:6px;vertical-align:1px;background:var(--soft);color:var(--muted)}
+.badge.hot{background:rgba(229,72,77,.1);color:#c52a30}
+.badge.tgt{background:var(--signal-tint);color:var(--signal)}
+.use{font-size:12px;font-weight:600;color:var(--signal);opacity:0;padding:3px 8px;border-radius:0;white-space:nowrap}
+tr:hover .use,.use:focus{opacity:1}
+.use:hover{background:var(--signal-tint)}
+.more{margin-top:12px;text-align:center}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-bottom:12px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:0;vertical-align:-2px;margin-right:6px}
+.hl{max-height:520px;overflow:auto;border:1px solid var(--line);border-radius:0;padding:18px 20px;font-size:14.5px;line-height:1.75;white-space:pre-wrap;word-wrap:break-word;color:var(--text);background:#fff}
+mark{border-radius:0;padding:0 1px;color:var(--fg)}
+mark.k1{background:rgba(255,107,66,.28);box-shadow:inset 0 -2px 0 var(--signal)}
+mark.k2{background:rgba(60,140,255,.18);box-shadow:inset 0 -2px 0 #2f6fd6}
+mark.k3{background:rgba(255,179,62,.45)}
+.pl-tbl td.st{text-align:center;width:1%}
+.pl-tbl th.st{text-align:center}
+.mk{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:0}
+.mk svg{width:14px;height:14px}
+.mk.y{background:rgba(31,157,85,.12);color:var(--green)}
+.mk.n{background:rgba(229,72,77,.1);color:#c52a30}
+.mk.na{background:var(--soft);color:var(--faint);font-size:12px}
+.pl-tbl td small{display:block;color:var(--muted-2);font-size:12px;line-height:1.35;margin-top:1px}
+.snippet{margin-top:18px;border:1px solid var(--line);border-radius:0;padding:16px 18px;background:var(--soft-2)}
+.snippet .eb{margin-bottom:10px}
+.snippet dl{display:grid;grid-template-columns:120px 1fr;gap:8px 14px;font-size:13.5px}
+.snippet dt{color:var(--muted-2)}
+.snippet dd{color:var(--fg);word-break:break-word}
+.snippet dd em{font-style:normal;color:var(--muted-2);font-size:12px;margin-left:6px}
+.dist-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.heat{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;align-items:end;height:120px;padding:10px 12px 0;border:1px solid var(--line);border-radius:0;border-bottom-left-radius:0;border-bottom-right-radius:0;background:#fff}
+.heat div{background:var(--signal);border-radius:0;min-height:3px;position:relative}
+.heat div.z{background:var(--line)}
+.heat-axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted-2);border:1px solid var(--line);border-top:0;border-radius:0;padding:6px 12px;background:var(--soft-2)}
+.callout{margin-top:14px;font-size:13.5px;color:var(--text);background:var(--soft-2);border:1px solid var(--line);border-radius:0;padding:12px 14px}
+.callout b{font-weight:600}
+.sec-tbl{margin-top:22px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tile{border:1px solid var(--line);border-radius:0;padding:14px 16px;background:#fff}
+.tile .l{font-size:12px;color:var(--muted-2)}
+.tile .v{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;color:var(--muted-2);margin-top:2px}
+.tile.big{grid-column:span 3;display:flex;align-items:center;gap:20px}
+.tile.big .v{font-size:40px}
+.read-bar{flex:1;height:8px;border-radius:0;background:linear-gradient(90deg,#e5484d,#ffb33e 45%,#1f9d55);position:relative}
+.read-bar i{position:absolute;top:-5px;width:4px;height:18px;border-radius:0;background:var(--ink);transform:translateX(-2px)}
+.cmp-in{display:grid;gap:10px;margin-bottom:18px}
+.cmp-in textarea{min-height:120px}
+.diff-up{color:var(--green);font-weight:600}
+.diff-dn{color:#c52a30;font-weight:600}
+
+/* results panel (dark) */
+.panel{position:sticky;top:88px;background:var(--ink);color:#fff;border:1px solid rgba(0,0,0,.1);border-radius:0;box-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1);overflow:hidden}
+.p-top{padding:22px 22px 18px}
+.eb-d{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.p-kw{font-size:13.5px;color:rgba(255,255,255,.75);margin-top:6px;word-break:break-word}
+.p-val{display:flex;align-items:baseline;gap:12px;margin-top:4px}
+.p-val b{font-size:44px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.1}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:0;background:rgba(255,255,255,.1);color:rgba(255,255,255,.8)}
+.status i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.status.ok{color:var(--green-hi);background:rgba(60,207,126,.12)}
+.status.lo{color:var(--amber);background:rgba(255,179,62,.12)}
+.status.hi{color:var(--signal-hi);background:rgba(255,107,66,.14)}
+.status.bad{color:#ff7a7f;background:rgba(229,72,77,.16)}
+.p-sub{font-size:13px;color:rgba(255,255,255,.55);margin-top:4px}
+.gauge{position:relative;height:8px;border-radius:0;background:rgba(255,255,255,.1);margin-top:18px}
+.gauge .zone{position:absolute;top:0;bottom:0;background:rgba(60,207,126,.35);border-radius:0}
+.gauge .mark{position:absolute;top:-5px;width:4px;height:18px;border-radius:0;background:#fff;transform:translateX(-2px);transition:left .25s}
+.g-scale{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.4);margin-top:6px;font-variant-numeric:tabular-nums}
+.fix{margin:0 22px;border:1px solid rgba(197,58,21,.5);background:rgba(197,58,21,.12);border-radius:0;padding:12px 14px}
+.fix .eb-d{color:var(--signal-hi);letter-spacing:.1em}
+.fix p{font-size:14px;font-weight:600;line-height:1.4;margin-top:4px}
+.sec-list{padding:14px 22px 0}
+.sec-list li{list-style:none;display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:7px 0;border-top:1px solid rgba(255,255,255,.08)}
+.sec-list li span:first-child{color:rgba(255,255,255,.75);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sec-list li span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.p-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;padding:18px 22px;border-top:1px solid rgba(255,255,255,.08);margin-top:18px}
+.p-stats .l{font-size:12px;color:rgba(255,255,255,.5)}
+.p-stats .v{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.warn{margin:0 22px 16px;font-size:12.5px;color:#ffb3b5;background:rgba(229,72,77,.12);border-radius:0;padding:10px 12px;line-height:1.45}
+.p-act{display:grid;gap:8px;padding:0 22px 22px}
+.p-act .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pbtn{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13.5px;font-weight:500;border-radius:0;padding:10px 12px;background:rgba(255,255,255,.1);color:#fff;transition:.15s}
+.pbtn:hover{background:rgba(255,255,255,.16)}
+.pbtn svg{width:15px;height:15px}
+.pbtn.primary{background:var(--signal);font-weight:600}
+.pbtn.primary:hover{background:#ad3212}
+.p-empty{padding:28px 22px;color:rgba(255,255,255,.6);font-size:14px;line-height:1.55}
+.p-empty b{color:#fff;display:block;font-size:16px;margin-bottom:6px}
+.privacy{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:rgba(255,255,255,.45);padding:12px 22px;border-top:1px solid rgba(255,255,255,.08);line-height:1.45}
+.privacy svg{width:14px;height:14px;flex-shrink:0;margin-top:1px;color:var(--green-hi)}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-size:13.5px;font-weight:500;padding:10px 16px;border-radius:0;box-shadow:var(--shadow-card);opacity:0;transition:.2s;z-index:80;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.mchip{display:none}
+
+/* ---------- content sections ---------- */
+.sec{padding:104px 0}
+.sec.soft{background:var(--soft)}
+.sec.dark{background:var(--ink);color:#fff}
+.eb{display:inline-flex;align-items:center;gap:8px;font-size:11.2px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eb::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--signal)}
+.dark .eb{color:#a3a3a3}
+h2.h2{font-size:clamp(26px,3.4vw,44px);font-weight:700;letter-spacing:-.025em;line-height:1.12;color:#262626;margin-top:14px;max-width:820px;text-wrap:balance}
+.dark h2.h2{color:#fff}
+.sub{font-size:17px;color:var(--muted);max-width:640px;margin-top:14px;text-wrap:pretty}
+.dark .sub{color:rgba(255,255,255,.6)}
+.center{text-align:center}
+.center h2.h2,.center .sub{margin-left:auto;margin-right:auto}
+.qgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:48px}
+.qcard{background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:0;padding:28px;transition:box-shadow .2s,transform .2s}
+.qcard:hover{box-shadow:var(--shadow-card);transform:translateY(-2px)}
+.qcard .top{display:flex;gap:16px;align-items:flex-start}
+.qicon{width:44px;height:44px;border-radius:0;background:#3f3f46;color:#fff;display:grid;place-items:center;flex-shrink:0}
+.qicon svg{width:20px;height:20px}
+.qcard h3{font-size:18px;font-weight:600;letter-spacing:-.01em;line-height:1.35;padding-top:9px}
+.how{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--signal);margin:22px 0 8px}
+.how svg{width:12px;height:12px}
+.qcard p{font-size:15px;color:var(--muted);line-height:1.6}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px}
+.stp{background:#fff;border-radius:0;padding:26px;border:1px solid rgba(0,0,0,.05)}
+.stp .n{font-family:var(--mono);font-size:12px;color:var(--muted-2)}
+.stp h3{font-size:17px;font-weight:600;margin-top:28px;letter-spacing:-.01em}
+.stp p{font-size:14.5px;color:var(--muted);margin-top:8px;line-height:1.6}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.prose p{font-size:16px;color:var(--muted);line-height:1.7;margin-top:16px}
+.prose p b{color:var(--fg);font-weight:600}
+.formula{margin-top:24px;display:grid;gap:12px}
+.fcard{border:1px solid var(--line);border-radius:0;padding:18px 20px;background:var(--soft-2)}
+.fcard .t{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
+.fcard code{display:block;font-family:var(--mono);font-size:14.5px;color:var(--fg);margin-top:8px}
+.fcard small{display:block;font-size:13px;color:var(--muted-2);margin-top:6px}
+.ranges{border:1px solid rgba(0,0,0,.08);border-radius:0;overflow:hidden;background:#fff;box-shadow:var(--shadow-card)}
+.ranges .hd{padding:20px 24px;border-bottom:1px solid var(--line)}
+.ranges .hd b{font-size:16px;font-weight:600}
+.ranges .hd span{display:block;font-size:13px;color:var(--muted-2);margin-top:2px}
+.rg{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:16px 24px;border-bottom:1px solid var(--soft);align-items:start}
+.rg:last-child{border-bottom:0}
+.rg .v{font-weight:700;font-variant-numeric:tabular-nums;font-size:15px}
+.rg .d b{display:block;font-size:14.5px;font-weight:600}
+.rg .d span{display:block;font-size:13.5px;color:var(--muted);margin-top:2px;line-height:1.5}
+.cmp-wrap{margin-top:48px;border:1px solid rgba(0,0,0,.08);border-radius:0;overflow-x:auto;background:#fff}
+.ctable{width:100%;border-collapse:collapse;min-width:820px;font-size:14px}
+.ctable th,.ctable td{padding:16px 18px;text-align:left;border-bottom:1px solid var(--soft);vertical-align:top}
+.ctable thead th{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);background:var(--soft-2)}
+.ctable thead th.us{background:var(--ink);color:#fff}
+.ctable td.us{background:var(--signal-tint);font-weight:600;color:var(--fg)}
+.ctable tbody th{font-weight:600;color:var(--fg);width:22%}
+.ctable td{color:var(--muted)}
+.ctable tr:last-child td,.ctable tr:last-child th{border-bottom:0}
+.y{color:var(--green);font-weight:600}
+.term{background:var(--ink-3);border:1px solid rgba(255,255,255,.1);border-radius:0;font-family:var(--mono);font-size:13px;line-height:1.85;color:rgba(255,255,255,.75);overflow:hidden}
+.term .bar-t{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.term .bar-t i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.15)}
+.term pre{padding:18px 20px;white-space:pre-wrap;font:inherit}
+.term .c{color:rgba(255,255,255,.4)}
+.term .g{color:var(--green-hi)}
+.term .o{color:var(--signal-hi)}
+.mlist{margin-top:28px;display:grid;gap:14px}
+.mlist>div{display:flex;gap:14px}
+.mlist .n{font-family:var(--mono);font-size:12px;color:var(--signal-hi);padding-top:3px;flex-shrink:0}
+.mlist b{display:block;font-size:15px;font-weight:600}
+.mlist span{display:block;font-size:14px;color:rgba(255,255,255,.6);line-height:1.55;margin-top:2px}
+.faq{max-width:860px;margin:48px auto 0}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:20px;padding:22px 0;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:22px;font-weight:400;color:var(--muted-2);line-height:1;transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{font-size:15.5px;color:var(--muted);line-height:1.7;padding:0 40px 22px 0}
+.cta{background:var(--ink);color:#fff;padding:120px 0 96px;overflow:hidden}
+.cta .big{font-size:clamp(56px,11vw,156px);font-weight:800;letter-spacing:-.05em;line-height:.9;text-transform:uppercase}
+.cta .big span{display:block;color:#c53a15;background:linear-gradient(180deg,#e2512a,#9e2c0e);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.term-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:32px;font-family:var(--mono);font-size:14px;color:rgba(255,255,255,.6)}
+.term-line .live{width:9px;height:9px;border-radius:50%;background:var(--green-hi);box-shadow:0 0 0 4px rgba(60,207,126,.15);animation:pulse 2s infinite}
+.term-line b{color:#fff;font-weight:500}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(60,207,126,.05)}}
+.cta .acts{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+footer{background:var(--ink);color:#fff;border-top:1px solid rgba(255,255,255,.08);padding:64px 0 32px}
+.fcols{display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+.fcols h4{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.fcols h4::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--signal)}
+.fcols a{display:block;font-size:14px;color:rgba(255,255,255,.62);padding:5px 0}
+.fcols a:hover{color:#fff}
+.fbot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:56px;padding-top:28px;border-top:1px solid rgba(255,255,255,.08);font-size:13px;color:rgba(255,255,255,.45)}
+.fbot p{max-width:420px;line-height:1.55;margin-top:12px}
+.fbot .tags{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
+.fbot .tags span{border:1px solid rgba(255,255,255,.14);border-radius:0;padding:4px 10px;font-size:12px;color:rgba(255,255,255,.6)}
+
+/* ---------- responsive ---------- */
+@media (max-width:1100px){
+  .checker .grid{grid-template-columns:minmax(0,1fr)}
+  .panel{position:static}
+  .steps{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:900px){
+  .nav,.hdr .btn{display:none}
+  .menu-btn{display:grid}
+  .hero-row{flex-direction:column;gap:16px}
+  .peek{flex:none;width:100%}
+  .hdr.open .nav{display:flex;flex-direction:column;align-items:stretch;position:absolute;top:64px;left:0;right:0;background:var(--ink);padding:12px 16px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .hdr.open .dd-menu{position:static;width:auto;margin-top:6px}
+  .split{grid-template-columns:1fr;gap:40px}
+  .qgrid{grid-template-columns:1fr}
+  .fcols{grid-template-columns:repeat(2,1fr)}
+  .kw-grid{grid-template-columns:1fr 1fr}
+  .kw-grid .fld:nth-child(3){grid-column:1/-1}
+}
+@media (max-width:640px){
+  .wrap{padding:0 16px}
+  .hero{padding:88px 0 72px}
+  .peek{flex-direction:row;align-items:center;justify-content:space-between;padding:10px 12px}
+  .peek-q,.peek-stats{display:none}
+  .card{padding:18px;border-radius:0}
+  .kw-grid{grid-template-columns:1fr}
+  .set-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .tiles{grid-template-columns:1fr 1fr}
+  .tile.big{grid-column:span 2;flex-direction:column;align-items:stretch;gap:10px}
+  .tiles.three{grid-template-columns:repeat(3,1fr);gap:8px}
+  .tiles.three .tile{padding:12px}
+  .tiles.three .v{font-size:18px}
+  .search input{width:100%}
+  .search{flex:1}
+  .bar{display:none}
+  .sec{padding:72px 0}
+  .snippet dl{grid-template-columns:1fr;gap:2px}
+  .snippet dd{margin-bottom:8px}
+  .mchip.show{display:flex;position:fixed;left:16px;right:16px;bottom:16px;z-index:60;background:var(--ink);color:#fff;border-radius:0;padding:10px 12px 10px 18px;align-items:center;justify-content:space-between;gap:10px;box-shadow:var(--shadow-card);font-size:14px}
+  .mchip b{font-variant-numeric:tabular-nums}
+  .faq details p{padding-right:0}
+  .use{opacity:1}
+}
+@media print{
+  .hdr,.hero,.sec,.cta,footer,.toast,.mchip,.toolbar,details.settings,.p-act,.rtabs,.tbl-tools,.use{display:none!important}
+  .checker{padding:0;background:#fff}
+  .checker .grid{margin:0;grid-template-columns:1fr}
+  .panel{position:static;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pane{display:block!important;break-inside:avoid;margin-top:16px}
+  .card{box-shadow:none}
+}
+
+/* ---------- internal-link-checker ---------- */
+.split-bar{display:flex;height:8px;margin-top:16px;background:rgba(255,255,255,.1)}
+.split-bar i{display:block;height:100%}
+.split-bar .in{background:var(--signal-hi)}
+.split-bar .ex{background:#8fb4ff}
+.split-bar .ot{background:rgba(255,255,255,.3)}
+.split-key{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:rgba(255,255,255,.6);margin-top:8px}
+.split-key span{display:inline-flex;align-items:center;gap:6px}
+.split-key i{width:8px;height:8px;display:inline-block}
+.loc-seg{margin-bottom:14px}
+.lk-url{font-size:12.5px;color:var(--muted-2);word-break:break-all;display:block;margin-top:1px}
+.lk-host{font-weight:600;color:var(--fg)}
+.badge.ok{background:rgba(31,157,85,.12);color:var(--green)}
+.badge.warn{background:rgba(255,179,62,.2);color:#8a5a00}
+.anc-chips{display:flex;flex-wrap:wrap;gap:4px}
+.anc-chips span{font-size:12px;background:var(--soft);padding:2px 7px;color:var(--text)}
+.anc-chips span b{font-weight:600;color:var(--muted-2);margin-left:4px}
+.issues{display:grid;gap:12px}
+.issue{border:1px solid var(--line);padding:14px 16px;background:#fff}
+.issue h4{font-size:15px;font-weight:600;display:flex;justify-content:space-between;gap:12px}
+.issue h4 b{font-variant-numeric:tabular-nums;color:#c52a30}
+.issue p{font-size:13.5px;color:var(--muted);margin-top:4px;line-height:1.5}
+.issue ul{margin-top:8px;padding-left:18px;font-size:13px;color:var(--text);display:grid;gap:3px}
+.issue ul li{word-break:break-word}
+.issue.good{border-color:rgba(31,157,85,.35);background:rgba(31,157,85,.05)}
+.issue.good h4 b{color:var(--green)}
+.p-link{display:block;margin:0 22px 18px;font-size:13.5px;font-weight:600;color:var(--signal-hi)}
+.p-link:hover{text-decoration:underline}
+.view-row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+</style>
+</head>
+<body>
+
+<header class="hdr" id="hdr">
+  <div class="wrap">
+    <a href="/" class="logo" aria-label="Keyword Density Checker home">
+      <svg viewBox="0 0 32 24" aria-hidden="true"><rect x="1" y="13" width="5.5" height="10" rx="1.6" fill="#fff"/><rect x="9.5" y="7.5" width="5.5" height="15.5" rx="1.6" fill="#fff"/><rect x="18" y="2" width="5.5" height="21" rx="1.6" fill="#ff6b42"/><circle cx="28.5" cy="5" r="2.6" fill="#fff"/></svg>
+      Keyword Density Checker
+    </a>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="/#checker">Checker</a>
+      <div class="dd" id="dd">
+        <button type="button" aria-expanded="false" aria-haspopup="true">Tools <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="dd-menu" role="menu">
+          <a href="/#checker" data-goto="keywords" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg></span><span><b>Phrase density</b><span>1, 2, 3 and 4-word phrases with counts</span></span></a>
+          <a href="/#checker" data-goto="placement" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg></span><span><b>Keyword placement audit</b><span>Title, meta, H1, slug, alt text and more</span></span></a>
+          <a href="/#checker" data-goto="distribution" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16v-3"/><path d="M11 16V8"/><path d="M15 16v-5"/><path d="M19 16V6"/></svg></span><span><b>Distribution map</b><span>Where your keyword clusters, by section</span></span></a>
+          <a href="/#checker" data-goto="readability" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></svg></span><span><b>Word counter &amp; readability</b><span>Words, sentences, reading time, Flesch score</span></span></a>
+          <a href="/#checker" data-goto="compare" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></span><span><b>Competitor compare</b><span>Your density next to a ranking page's</span></span></a>
+          <a href="/internal-link-checker/" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span><span><b>Internal link checker</b><span>Every internal and external link, with its anchor text</span></span></a>
+        </div>
+      </div>
+      <a href="/#how">How it works</a>
+      <a href="/#ideal">Ideal density</a>
+      <a href="/#method">Method</a>
+      <a href="/#faq">FAQ</a>
+    </nav>
+    <a href="/#checker" class="btn btn-signal btn-sm">Check your text <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open main menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap hero-row">
+    <div class="hero-main">
+      <h1>Internal Link Checker</h1>
+      <p class="lead">Enter a URL or paste HTML. See every internal and external link on the page, where it sits, and the anchor text behind it.</p>
+    </div>
+    <a class="peek" id="peek" href="/">
+      <span class="peek-eb">Also · Keyword Density Checker</span>
+      <span class="peek-q">Your links are sorted. Is your main keyword used the right number of times?</span>
+      <span class="peek-stats"><span><b>?</b>density</span><span><b>?</b>uses to add</span><span><b>?</b>placement</span></span>
+      <span class="peek-go" id="peekGo">Check keyword density →</span>
+    </a>
+  </div>
+</section>
+
+<section class="checker" id="checker" aria-label="Internal link checker">
+  <div class="wrap">
+    <div class="grid">
+      <div class="card">
+        <div class="blk">
+          <div class="step">1. Your page</div>
+          <div class="seg" role="tablist" aria-label="Input type" style="margin-bottom:12px">
+            <button class="on" data-mode="url" role="tab" aria-selected="true">Fetch a URL</button>
+            <button data-mode="html" role="tab" aria-selected="false">Paste HTML</button>
+          </div>
+          <div id="modeUrl">
+            <form class="url-row" id="urlForm">
+              <label for="url" class="sr">Page URL</label>
+              <input class="inp" id="url" type="text" inputmode="url" placeholder="https://example.com/your-article" autocomplete="off">
+              <button class="btn-dark" id="fetchBtn" type="submit">Check links</button>
+            </form>
+            <div class="progress" id="fetchProg" hidden><div class="pg-top"><span>Connecting to the page</span><b>0%</b></div><div class="pg-track"><i></i></div></div>
+            <div class="fetched" id="fetched"></div>
+          </div>
+          <div id="modeHtml" hidden>
+            <label for="html" class="sr">Page HTML</label>
+            <textarea id="html" placeholder="Paste the page's HTML here (in your browser: right-click → View page source, then copy all)."></textarea>
+            <div class="fld" style="margin-top:10px"><label for="pageUrl">Page URL <span style="color:var(--faint)">(optional: tells internal links from external ones)</span></label><input class="inp" id="pageUrl" placeholder="https://example.com/your-article" autocomplete="off"></div>
+          </div>
+          <div class="note" id="srcNote">Enter any public page. It's read through a public page reader, then analysed in your browser.</div>
+        </div>
+
+        <div class="blk">
+          <div class="step">2. Links on the page</div>
+          <div class="seg loc-seg" id="locSeg"></div>
+          <div class="rtabs" role="tablist" aria-label="Result views">
+            <button class="on" data-tab="internal" role="tab">Internal <span class="ct" id="cIn"></span></button>
+            <button data-tab="external" role="tab">External <span class="ct" id="cEx"></span></button>
+            <button data-tab="anchors" role="tab">Anchor texts</button>
+            <button data-tab="issues" role="tab">Issues <span class="ct" id="cIs"></span></button>
+          </div>
+          <div class="pane on" id="p-internal"></div>
+          <div class="pane" id="p-external"></div>
+          <div class="pane" id="p-anchors"></div>
+          <div class="pane" id="p-issues"></div>
+        </div>
+      </div>
+      <aside class="panel" id="panel" aria-live="polite"></aside>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="features">
+  <div class="wrap">
+    <span class="eb">What it checks</span>
+    <h2 class="h2">Every link on the page, sorted and explained</h2>
+    <div class="qgrid">
+      <article class="qcard"><div class="top"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span><h3>"Which pages does this page link to?"</h3></div><div class="how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>How we check it</div><p>Every link is sorted into internal (same site) or external (other sites), with mail, phone and jump links kept apart so they don't inflate the count.</p></article>
+      <article class="qcard"><div class="top"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16"/><path d="M3 9h18"/><path d="M9 20V9"/></svg></span><h3>"Are these links in my content or just the menu?"</h3></div><div class="how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>How we check it</div><p>Each link is tagged by where it sits: body text, navigation, header, footer or sidebar. Filter to body text to see the links you actually chose to write.</p></article>
+      <article class="qcard"><div class="top"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg></span><h3>"What words am I linking with?"</h3></div><div class="how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>How we check it</div><p>The anchor texts view lists every anchor and how often it's used, plus the reverse: each linked page and all the anchors pointing to it.</p></article>
+      <article class="qcard"><div class="top"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg></span><h3>"Is anything wrong with my links?"</h3></div><div class="how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>How we check it</div><p>Flags "click here" anchors, empty links, images with no alt text, nofollow on your own pages, insecure http links and one anchor used for different pages.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="sec soft" id="anchors-guide">
+  <div class="wrap split">
+    <div class="prose">
+      <span class="eb">Internal and external links</span>
+      <h2 class="h2">What the two kinds of links do</h2>
+      <p><b>Internal links</b> connect pages on your own site. They help readers find the next useful page, and they show search engines which pages matter and how they relate. A page with no internal links pointing to it is hard for anyone to find.</p>
+      <p><b>External links</b> point to other sites. Linking to a good source helps readers and costs you nothing. Paid or untrusted links should carry <b>rel="sponsored"</b>, <b>rel="ugc"</b> or <b>rel="nofollow"</b>, and the checker shows which ones do.</p>
+    </div>
+    <div class="ranges">
+      <div class="hd"><b>What good anchor text looks like</b><span>The clickable words tell readers and search engines what's on the other side</span></div>
+      <div class="rg"><span class="v" style="color:var(--green)">Good</span><div class="d"><b>Describes the target</b><span>"our keyword density formula guide", "Amazon listing checklist"</span></div></div>
+      <div class="rg"><span class="v" style="color:var(--signal)">Weak</span><div class="d"><b>Generic words</b><span>"click here", "read more", "this link". Say nothing about the page.</span></div></div>
+      <div class="rg"><span class="v" style="color:var(--signal)">Weak</span><div class="d"><b>A bare URL</b><span>Fine for citations, but clumsy in running text.</span></div></div>
+      <div class="rg"><span class="v" style="color:#c52a30">Fix</span><div class="d"><b>Empty or image-only with no alt</b><span>The link has no words at all. Add text or alt text.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="center"><span class="eb">Questions &amp; answers</span><h2 class="h2">Frequently asked questions</h2></div>
+    <div class="faq">
+      <details><summary>What is an internal link?</summary><p>An internal link points to another page on the same website, like a blog post linking to a product page. An external link points to a different website. Links to a subdomain (blog.example.com from example.com) are counted as external and marked "subdomain".</p></details>
+      <details><summary>How many internal links should a page have?</summary><p>There's no fixed number. Most well-linked articles have a handful of contextual internal links in the body text, each pointing to a page that genuinely helps the reader. Navigation and footer links come on top of that. Use the "Body text" filter to count only the ones in your content.</p></details>
+      <details><summary>Why does the checker show more links than I added?</summary><p>Menus, headers, footers and sidebars add links to every page. Switch the filter to "Body text" to see only the links inside your content.</p></details>
+      <details><summary>Does this check whether links are broken?</summary><p>No. It lists and classifies every link on the page and its anchor text. It doesn't visit each linked page, so it can't report status codes or redirects.</p></details>
+      <details><summary>What counts as a generic anchor?</summary><p>Anchors such as "click here", "read more", "learn more", "here" and "this link". They tell readers and search engines nothing about the page they lead to.</p></details>
+      <details><summary>Is the page I check stored?</summary><p>No. Pasted HTML is analysed in your browser. A URL is fetched through a public page reader so the browser can read it, then analysed in your browser. Some sites block automated readers; if a fetch fails, paste the page source instead.</p></details>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fcols">
+      <div><h4>Tools</h4><a href="/#checker" data-goto="keywords">Keyword density checker</a><a href="/#checker" data-goto="placement">Keyword placement audit</a><a href="/#checker" data-goto="distribution">Keyword distribution map</a><a href="/#checker" data-goto="readability">Word counter</a><a href="/#checker" data-goto="compare">Competitor density compare</a><a href="/internal-link-checker/">Internal link checker</a></div>
+      <div><h4>Guides</h4><a href="/#ideal">What is keyword density?</a><a href="/#ideal">Ideal keyword density</a><a href="/#faq">Keyword stuffing, explained</a><a href="/#compare-tools">Ways to check density</a></div>
+      <div><h4>Company</h4><a href="/#method">Our method</a><a href="/#how">How it works</a><a href="mailto:hello@keyworddensitychecker.co">Contact</a></div>
+      <div><h4>Legal</h4><a href="/#method">Privacy</a><a href="/#faq">Terms of use</a></div>
+    </div>
+    <div class="fbot">
+      <div>
+        <a href="/" class="logo"><svg viewBox="0 0 32 24" aria-hidden="true"><rect x="1" y="13" width="5.5" height="10" rx="1.6" fill="#fff"/><rect x="9.5" y="7.5" width="5.5" height="15.5" rx="1.6" fill="#fff"/><rect x="18" y="2" width="5.5" height="21" rx="1.6" fill="#ff6b42"/><circle cx="28.5" cy="5" r="2.6" fill="#fff"/></svg>Keyword Density Checker</a>
+        <p>A free keyword density checker for SEO writers and editors. Phrase density, goal checks, placement audits and competitor comparison, all in your browser.</p>
+      </div>
+    </div>
+    <div class="fbot" style="margin-top:24px;padding-top:20px"><span>© 2026 Keyword Density Checker. All rights reserved.</span><span>Made for people who write for search.</span></div>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => n.toLocaleString('en-US');
+const I = {
+  copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
+  dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'
+};
+
+/* ---------- header ---------- */
+$('#dd > button').addEventListener('click', e => { e.stopPropagation(); const dd = $('#dd'); dd.classList.toggle('open'); e.currentTarget.setAttribute('aria-expanded', dd.classList.contains('open')); });
+document.addEventListener('click', e => { if (!e.target.closest('#dd')) $('#dd').classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { $('#dd').classList.remove('open'); $('#hdr').classList.remove('open'); } });
+$('#menuBtn').addEventListener('click', () => $('#hdr').classList.toggle('open'));
+
+/* ---------- analysis ---------- */
+const GENERIC = new Set(['click here','click','here','read more','learn more','more','this','link','this link','go','see more','continue','continue reading','details','more info','more information','find out more','view','view more','website','this page','this article','see here','read this','check it out','visit','visit site','learn','read']);
+const LOCS = [['all','All'],['body','Body text'],['nav','Navigation'],['header','Header'],['footer','Footer'],['sidebar','Sidebar']];
+const hostKey = h => h.toLowerCase().replace(/^www\./, '');
+const REL = 'https://relative.invalid/';
+
+function analyse(html, pageUrl) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const declared = pageUrl || doc.querySelector('link[rel="canonical" i]')?.getAttribute('href') || doc.querySelector('meta[property="og:url" i]')?.getAttribute('content') || '';
+  let base = null; try { base = declared ? new URL(declared) : null; } catch (e) {}
+  let resolveBase = base;
+  const bEl = doc.querySelector('base[href]');
+  if (bEl) { try { resolveBase = new URL(bEl.getAttribute('href'), base || undefined); } catch (e) {} }
+  const host = base ? hostKey(base.hostname) : null;
+  const clone = doc.body ? doc.body.cloneNode(true) : null;
+  if (clone) clone.querySelectorAll('script,style,noscript,template,svg').forEach(n => n.remove());
+  const words = clone ? (clone.textContent.match(/[\p{L}\p{N}]+/gu) || []).length : 0;
+  const links = [];
+  doc.querySelectorAll('a[href]').forEach(a => {
+    const raw = (a.getAttribute('href') || '').trim();
+    const text = a.textContent.replace(/\s+/g, ' ').trim();
+    const img = a.querySelector('img');
+    const alt = img ? (img.getAttribute('alt') || '').trim() : '';
+    const aria = (a.getAttribute('aria-label') || '').trim();
+    let anchor = text, atype = 'text';
+    if (!text) {
+      if (img) { anchor = alt; atype = alt ? 'image' : 'image-noalt'; }
+      else if (aria) { anchor = aria; atype = 'aria'; }
+      else atype = 'empty';
+    }
+    const rel = (a.getAttribute('rel') || '').toLowerCase().split(/\s+/).filter(Boolean);
+    const loc = a.closest('nav,[role="navigation"]') ? 'nav' : a.closest('header,[role="banner"]') ? 'header' : a.closest('footer,[role="contentinfo"]') ? 'footer' : a.closest('aside,[role="complementary"]') ? 'sidebar' : 'body';
+    let kind = '', url = null;
+    if (!raw || raw === '#' || raw.startsWith('#')) kind = 'jump';
+    else if (/^(mailto|tel|sms):/i.test(raw)) kind = 'contact';
+    else if (/^javascript:/i.test(raw)) kind = 'script';
+    else { try { url = new URL(raw, resolveBase || REL); } catch (e) { kind = 'invalid'; } }
+    let sub = false;
+    if (url) {
+      if (!/^https?:$/.test(url.protocol)) kind = 'other';
+      else if (url.origin === new URL(REL).origin) kind = 'internal';
+      else if (!host) kind = 'external';
+      else {
+        const h = hostKey(url.hostname);
+        if (h === host) kind = 'internal';
+        else { kind = 'external'; sub = h.endsWith('.' + host) || host.endsWith('.' + h); }
+      }
+      if (kind === 'internal' && base && url.hash && url.pathname === base.pathname && url.search === base.search) kind = 'jump';
+    }
+    const relative = url && url.origin === new URL(REL).origin;
+    const path = url ? (url.pathname.replace(/\/+$/, '') || '/') + url.search : raw;
+    const norm = url ? (kind === 'internal' ? path : hostKey(url.hostname) + path) : raw;
+    const lc = anchor.toLowerCase().replace(/[\s.!?»›→…:>]+$/, '').trim();
+    links.push({
+      raw, kind, loc, anchor, atype, rel, sub, norm,
+      href: url && !relative ? url.href : raw,
+      host: url && !relative ? hostKey(url.hostname) : (host || ''),
+      path,
+      nofollow: rel.includes('nofollow'), sponsored: rel.includes('sponsored'), ugc: rel.includes('ugc'),
+      blank: (a.getAttribute('target') || '').toLowerCase() === '_blank',
+      http: !!url && url.protocol === 'http:',
+      generic: GENERIC.has(lc), urlAnchor: /^(https?:\/\/|www\.)/i.test(anchor)
+    });
+  });
+  return { links, title: (doc.querySelector('title')?.textContent || '').trim(), host, page: base ? base.href : '', words };
+}
+
+/* ---------- state ---------- */
+const state = { mode: 'url', tab: 'internal', loc: 'all', ascope: 'internal', aview: 'anchor', url: '', raw: '' };
+let R = null;
+
+function issuesOf(links) {
+  const inn = links.filter(l => l.kind === 'internal'), ext = links.filter(l => l.kind === 'external'), web = inn.concat(ext);
+  const byAnchor = new Map();
+  inn.filter(l => l.anchor && !l.generic).forEach(l => { const k = l.anchor.toLowerCase(); if (!byAnchor.has(k)) byAnchor.set(k, new Set()); byAnchor.get(k).add(l.norm); });
+  const clash = [...byAnchor.entries()].filter(([, s]) => s.size > 1);
+  const bodyIn = inn.filter(l => l.loc === 'body').length;
+  const ex = (arr, f) => arr.slice(0, 6).map(f);
+  const show = l => `"${esc(l.anchor || '(no text)')}" → ${esc(l.kind === 'internal' ? l.path : l.host + l.path)}`;
+  return [
+    { t: 'Generic anchor text', n: web.filter(l => l.generic).length, why: 'Words like "click here" and "read more" say nothing about the page they lead to. Describe the target instead.', ex: ex(web.filter(l => l.generic), show) },
+    { t: 'Links with no text', n: web.filter(l => l.atype === 'empty').length, why: 'No words, no image and no label. Screen readers and search engines get nothing.', ex: ex(web.filter(l => l.atype === 'empty'), l => esc(l.kind === 'internal' ? l.path : l.host + l.path)) },
+    { t: 'Image links without alt text', n: web.filter(l => l.atype === 'image-noalt').length, why: 'For an image link, the alt text is the anchor text. Add a short description.', ex: ex(web.filter(l => l.atype === 'image-noalt'), l => esc(l.kind === 'internal' ? l.path : l.host + l.path)) },
+    { t: 'Nofollow on your own pages', n: inn.filter(l => l.nofollow).length, why: 'Nofollow on internal links stops them passing value inside your own site. It\'s rarely what you want.', ex: ex(inn.filter(l => l.nofollow), show) },
+    { t: 'One anchor, different pages', n: clash.length, why: 'The same words point to different pages, so neither page clearly owns that topic.', ex: clash.slice(0, 6).map(([a, s]) => `"${esc(a)}" → ${[...s].slice(0, 3).map(esc).join(', ')}`) },
+    { t: 'Insecure http:// links', n: web.filter(l => l.http).length, why: 'Link to the https version where it exists.', ex: ex(web.filter(l => l.http), show) },
+    { t: 'Bare URLs as anchor text', n: web.filter(l => l.urlAnchor).length, why: 'Fine in a reference list, clumsy in a sentence. Use words that describe the page.', ex: ex(web.filter(l => l.urlAnchor), show) },
+    { t: 'Few internal links in the body text', n: inn.length && bodyIn < 3 ? 1 : 0, why: `Only ${bodyIn} internal link${bodyIn === 1 ? '' : 's'} sit in the content itself. Link to the pages a reader would want next.`, ex: [] }
+  ];
+}
+
+function run(html, pageUrl) {
+  R = analyse(html, pageUrl);
+  R.issues = issuesOf(R.links);
+  renderAll();
+}
+function inLoc(l) { return state.loc === 'all' || l.loc === state.loc; }
+
+/* ---------- render ---------- */
+function renderAll() { renderPanel(); renderLocSeg(); renderCounts(); renderTab(); updatePeek(); }
+function renderEmpty() {
+  $('#panel').innerHTML = `<div class="p-top"><span class="eb-d">Links on this page</span></div><div class="p-empty"><b>Enter a page to start</b>Fetch a URL or paste the page's HTML. You'll see every internal and external link, where it sits, and its anchor text.</div><div class="privacy">${I.lock}<span>Runs in your browser. Nothing you paste is uploaded.</span></div>`;
+  ['internal', 'external', 'anchors', 'issues'].forEach(t => $('#p-' + t).innerHTML = '<div class="empty">Add a page in step 1 to see its links.</div>');
+  $('#locSeg').innerHTML = LOCS.map(([v, l]) => `<button type="button" data-loc="${v}" class="${v === 'all' ? 'on' : ''}" disabled>${l}</button>`).join('');
+  ['cIn', 'cEx', 'cIs'].forEach(id => $('#' + id).textContent = '');
+}
+function renderPanel() {
+  const L = R.links, inn = L.filter(l => l.kind === 'internal'), ext = L.filter(l => l.kind === 'external'), oth = L.length - inn.length - ext.length;
+  const total = L.length || 1;
+  const uniqIn = new Set(inn.map(l => l.norm)).size, doms = new Set(ext.map(l => l.host)).size;
+  const nf = L.filter(l => l.nofollow || l.sponsored || l.ugc).length;
+  const issues = R.issues.reduce((a, i) => a + (i.n ? 1 : 0), 0);
+  const bodyLinks = L.filter(l => l.loc === 'body' && (l.kind === 'internal' || l.kind === 'external')).length;
+  $('#panel').innerHTML = `
+    <div class="p-top"><span class="eb-d">Links on this page</span>
+      ${R.title ? `<div class="p-kw">${esc(R.title)}</div>` : ''}
+      <div class="p-val"><b>${fmt(L.length)}</b><span class="status ${issues ? 'hi' : 'ok'}"><i></i>${issues ? issues + ' issue type' + (issues > 1 ? 's' : '') : 'No issues'}</span></div>
+      <div class="p-sub">${fmt(bodyLinks)} in the body text${R.words ? ` · 1 link per ${fmt(Math.max(1, Math.round(R.words / Math.max(1, inn.length + ext.length))))} words` : ''}</div>
+      <div class="split-bar" role="img" aria-label="${inn.length} internal, ${ext.length} external, ${oth} other links"><i class="in" style="width:${inn.length / total * 100}%"></i><i class="ex" style="width:${ext.length / total * 100}%"></i><i class="ot" style="width:${oth / total * 100}%"></i></div>
+      <div class="split-key"><span><i style="background:var(--signal-hi)"></i>Internal ${fmt(inn.length)}</span><span><i style="background:#8fb4ff"></i>External ${fmt(ext.length)}</span>${oth ? `<span><i style="background:rgba(255,255,255,.3)"></i>Jump, mail, phone ${fmt(oth)}</span>` : ''}</div>
+    </div>
+    <div class="p-stats">
+      <div><div class="l">Internal pages linked</div><div class="v">${fmt(uniqIn)}</div></div>
+      <div><div class="l">External domains</div><div class="v">${fmt(doms)}</div></div>
+      <div><div class="l">Unique anchor texts</div><div class="v">${fmt(new Set(L.filter(l => l.anchor).map(l => l.anchor.toLowerCase())).size)}</div></div>
+      <div><div class="l">Nofollow / sponsored / ugc</div><div class="v">${fmt(nf)}</div></div>
+      <div><div class="l">Open in new tab</div><div class="v">${fmt(L.filter(l => l.blank).length)}</div></div>
+      <div><div class="l">Words on page</div><div class="v">${fmt(R.words)}</div></div>
+    </div>
+    ${R.host ? '' : '<div class="warn">No page URL found, so absolute links all count as external. Add the page URL under "Paste HTML" for an exact split.</div>'}
+    <a class="p-link" href="/${R.page ? '#url=' + encodeURIComponent(R.page) : ''}">Check this page's keyword density →</a>
+    <div class="p-act"><div class="two"><button class="pbtn" data-act="copy">${I.copy}Copy report</button><button class="pbtn" data-act="csv">${I.dl}Download CSV</button></div></div>
+    <div class="privacy">${I.lock}<span>${state.mode === 'url' ? 'Fetched through a public page reader, analysed in your browser.' : 'Analysed in your browser. Nothing was uploaded.'}</span></div>`;
+}
+function renderLocSeg() {
+  const web = R.links.filter(l => l.kind === 'internal' || l.kind === 'external');
+  $('#locSeg').innerHTML = LOCS.map(([v, l]) => { const n = v === 'all' ? web.length : web.filter(x => x.loc === v).length; return `<button type="button" data-loc="${v}" class="${state.loc === v ? 'on' : ''}" ${n || v === 'all' ? '' : 'disabled'}>${l}<span class="ct">${fmt(n)}</span></button>`; }).join('');
+}
+function renderCounts() {
+  $('#cIn').textContent = fmt(R.links.filter(l => l.kind === 'internal' && inLoc(l)).length);
+  $('#cEx').textContent = fmt(R.links.filter(l => l.kind === 'external' && inLoc(l)).length);
+  $('#cIs').textContent = fmt(R.issues.reduce((a, i) => a + (i.n ? 1 : 0), 0));
+}
+function renderTab() { if (!R) return; ({ internal: () => renderLinks('internal'), external: () => renderLinks('external'), anchors: renderAnchors, issues: renderIssues })[state.tab](); }
+
+const LOCNAME = { body: 'Body text', nav: 'Navigation', header: 'Header', footer: 'Footer', sidebar: 'Sidebar' };
+function badges(l) {
+  let b = '';
+  if (l.nofollow) b += '<span class="badge warn">nofollow</span>';
+  if (l.sponsored) b += '<span class="badge">sponsored</span>';
+  if (l.ugc) b += '<span class="badge">ugc</span>';
+  if (l.blank) b += '<span class="badge">new tab</span>';
+  if (l.sub) b += '<span class="badge">subdomain</span>';
+  if (l.generic) b += '<span class="badge hot">generic</span>';
+  if (l.atype === 'image') b += '<span class="badge">image</span>';
+  if (l.atype === 'image-noalt') b += '<span class="badge hot">image, no alt</span>';
+  if (l.atype === 'empty') b += '<span class="badge hot">no text</span>';
+  if (l.http) b += '<span class="badge warn">http</span>';
+  return b;
+}
+function renderLinks(kind) {
+  const el = $('#p-' + kind);
+  const rows = new Map();
+  R.links.filter(l => l.kind === kind && inLoc(l)).forEach(l => {
+    const k = l.norm + '|' + l.anchor.toLowerCase() + '|' + l.loc;
+    const r = rows.get(k); if (r) r.n++; else rows.set(k, { l, n: 1 });
+  });
+  const list = [...rows.values()];
+  if (!list.length) { el.innerHTML = `<div class="empty">No ${kind} links${state.loc === 'all' ? '' : ' in ' + LOCNAME[state.loc].toLowerCase()} on this page.</div>`; return; }
+  el.innerHTML = `<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>#</th><th>Anchor text</th><th>Links to</th><th>Where</th><th class="num">Times</th></tr></thead><tbody>${list.map(({ l, n }, i) => `<tr style="cursor:default"><td class="rank">${i + 1}</td><td class="kw">${l.anchor ? esc(l.anchor) : '<span style="color:var(--faint)">(no text)</span>'}${badges(l)}</td><td>${kind === 'internal' ? `<span class="lk-host">${esc(l.path)}</span>` : `<span class="lk-host">${esc(l.host)}</span><span class="lk-url">${esc(l.path)}</span>`}</td><td>${LOCNAME[l.loc]}</td><td class="num">${n}</td></tr>`).join('')}</tbody></table></div>
+    <div class="note">Same anchor, same page and same place are grouped; "Times" counts repeats.</div>`;
+}
+function renderAnchors() {
+  const el = $('#p-anchors');
+  const scope = R.links.filter(l => (state.ascope === 'all' ? (l.kind === 'internal' || l.kind === 'external') : l.kind === state.ascope) && inLoc(l));
+  const head = `<div class="view-row"><div class="seg" id="aScope">${[['internal', 'Internal'], ['external', 'External'], ['all', 'All']].map(([v, l]) => `<button type="button" data-ascope="${v}" class="${state.ascope === v ? 'on' : ''}">${l}</button>`).join('')}</div><div class="seg" id="aView">${[['anchor', 'By anchor text'], ['page', 'By linked page']].map(([v, l]) => `<button type="button" data-aview="${v}" class="${state.aview === v ? 'on' : ''}">${l}</button>`).join('')}</div></div>`;
+  if (!scope.length) { el.innerHTML = head + '<div class="empty">No links in this view.</div>'; return; }
+  const target = l => l.kind === 'internal' ? l.path : l.host + l.path;
+  let body;
+  if (state.aview === 'anchor') {
+    const m = new Map();
+    scope.forEach(l => { const k = l.anchor ? l.anchor.toLowerCase() : '(no text)'; if (!m.has(k)) m.set(k, { a: l.anchor || '', n: 0, t: new Set(), l }); const o = m.get(k); o.n++; o.t.add(target(l)); });
+    const rows = [...m.values()].sort((a, b) => b.n - a.n || a.a.localeCompare(b.a));
+    body = `<table class="tbl"><thead><tr><th>Anchor text</th><th class="num">Used</th><th>Points to</th></tr></thead><tbody>${rows.map(o => `<tr style="cursor:default"><td class="kw">${o.a ? esc(o.a) : '<span style="color:var(--faint)">(no text)</span>'}${o.l.generic ? '<span class="badge hot">generic</span>' : ''}${o.l.urlAnchor ? '<span class="badge warn">URL</span>' : ''}${o.l.atype === 'image' ? '<span class="badge">image alt</span>' : ''}${o.t.size > 1 && state.ascope !== 'external' ? '<span class="badge warn">' + o.t.size + ' pages</span>' : ''}</td><td class="num">${o.n}</td><td><div class="anc-chips">${[...o.t].slice(0, 4).map(t => `<span>${esc(t)}</span>`).join('')}${o.t.size > 4 ? `<span>+${o.t.size - 4} more</span>` : ''}</div></td></tr>`).join('')}</tbody></table>`;
+  } else {
+    const m = new Map();
+    scope.forEach(l => { const k = target(l); if (!m.has(k)) m.set(k, { t: k, n: 0, a: new Map() }); const o = m.get(k); o.n++; const ak = l.anchor || '(no text)'; o.a.set(ak, (o.a.get(ak) || 0) + 1); });
+    const rows = [...m.values()].sort((a, b) => b.n - a.n || a.t.localeCompare(b.t));
+    body = `<table class="tbl"><thead><tr><th>Linked page</th><th class="num">Links</th><th>Anchor texts used</th></tr></thead><tbody>${rows.map(o => { const allGeneric = [...o.a.keys()].every(a => GENERIC.has(a.toLowerCase())); return `<tr style="cursor:default"><td class="kw">${esc(o.t)}${allGeneric ? '<span class="badge hot">only generic</span>' : ''}</td><td class="num">${o.n}</td><td><div class="anc-chips">${[...o.a.entries()].sort((x, y) => y[1] - x[1]).map(([a, n]) => `<span>${esc(a)}${n > 1 ? `<b>×${n}</b>` : ''}</span>`).join('')}</div></td></tr>`; }).join('')}</tbody></table>`;
+  }
+  el.innerHTML = head + `<div style="overflow-x:auto">${body}</div>`;
+}
+function renderIssues() {
+  const found = R.issues.filter(i => i.n), clean = R.issues.filter(i => !i.n);
+  $('#p-issues').innerHTML = `<div class="issues">${found.map(i => `<div class="issue"><h4>${i.t}<b>${fmt(i.n)}</b></h4><p>${i.why}</p>${i.ex.length ? `<ul>${i.ex.map(e => `<li>${e}</li>`).join('')}</ul>` : ''}</div>`).join('')}
+    <div class="issue good"><h4>Passed<b>${clean.length} of ${R.issues.length}</b></h4><p>${clean.map(i => i.t).join(' · ') || 'None'}</p></div></div>
+    <div class="note">Issues count links anywhere on the page, menus included. This checker reads the page; it doesn't open each link, so it can't spot broken links.</div>`;
+}
+
+/* ---------- peek ---------- */
+function updatePeek() {
+  const page = R && R.page;
+  $('#peek').href = '/' + (page ? '#url=' + encodeURIComponent(page) : '');
+  $('#peekGo').textContent = page ? 'Check this page\'s keyword density →' : 'Check keyword density →';
+}
+
+/* ---------- events ---------- */
+$('#locSeg').addEventListener('click', e => { const b = e.target.closest('[data-loc]'); if (!b || !R) return; state.loc = b.dataset.loc; renderLocSeg(); renderCounts(); renderTab(); });
+$$('.rtabs button').forEach(b => b.addEventListener('click', () => { state.tab = b.dataset.tab; $$('.rtabs button').forEach(x => x.classList.toggle('on', x === b)); $$('.pane').forEach(p => p.classList.toggle('on', p.id === 'p-' + state.tab)); renderTab(); }));
+$('#p-anchors').addEventListener('click', e => {
+  const s = e.target.closest('[data-ascope]'), v = e.target.closest('[data-aview]');
+  if (s) { state.ascope = s.dataset.ascope; renderAnchors(); }
+  if (v) { state.aview = v.dataset.aview; renderAnchors(); }
+});
+function setMode(m) {
+  state.mode = m;
+  $$('[data-mode]').forEach(b => { b.classList.toggle('on', b.dataset.mode === m); b.setAttribute('aria-selected', b.dataset.mode === m); });
+  $('#modeUrl').hidden = m !== 'url'; $('#modeHtml').hidden = m !== 'html';
+  const note = $('#srcNote'); note.className = 'note';
+  note.textContent = m === 'url' ? 'Enter any public page. It\'s read through a public page reader, then analysed in your browser.' : 'Paste the full page source. It\'s analysed in your browser and never uploaded.';
+  if (m === 'html' && $('#html').value.trim()) run($('#html').value, $('#pageUrl').value.trim());
+  else if (m === 'url' && state.raw) run(state.raw, state.url);
+  else { R = null; renderEmpty(); updatePeek(); }
+}
+$$('[data-mode]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+let tmr;
+const htmlInput = () => { clearTimeout(tmr); tmr = setTimeout(() => { if ($('#html').value.trim()) run($('#html').value, $('#pageUrl').value.trim()); else { R = null; renderEmpty(); } }, 250); };
+$('#html').addEventListener('input', htmlInput);
+$('#pageUrl').addEventListener('input', htmlInput);
+
+/* ---------- fetch ---------- */
+async function fetchPage(u) {
+  u = u.trim(); if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+  new URL(u);
+  const tries = [
+    { url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
+    { url: 'https://r.jina.ai/' + u, headers: { 'X-Return-Format': 'html' } }
+  ];
+  for (const t of tries) {
+    const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 20000);
+    try {
+      const r = await fetch(t.url, { headers: t.headers || {}, signal: ctl.signal });
+      clearTimeout(to);
+      if (!r.ok) continue;
+      const body = await r.text();
+      if (body && body.length > 200) return { html: body, url: u };
+    } catch (e) { clearTimeout(to); }
+  }
+  throw new Error('fetch failed');
+}
+// eases toward 92% while waiting, jumps to 100% when the page arrives
+function startProgress(box) {
+  const bar = box.querySelector('i'), pct = box.querySelector('b'), lbl = box.querySelector('span');
+  let p = 0;
+  const paint = () => { bar.style.width = p + '%'; pct.textContent = Math.round(p) + '%'; lbl.textContent = p >= 100 ? 'Done' : p < 30 ? 'Connecting to the page' : p < 70 ? 'Downloading the page' : 'Reading the links'; };
+  box.hidden = false; paint();
+  const t = setInterval(() => { p = Math.min(92, p + (92 - p) * 0.05 + 0.15); paint(); }, 120);
+  return { done() { clearInterval(t); p = 100; paint(); setTimeout(() => { box.hidden = true; }, 500); }, fail() { clearInterval(t); box.hidden = true; } };
+}
+$('#urlForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const u = $('#url').value; if (!u.trim()) return;
+  const btn = $('#fetchBtn'), note = $('#srcNote');
+  btn.disabled = true; btn.textContent = 'Fetching…'; note.hidden = true; $('#fetched').className = 'fetched';
+  const pg = startProgress($('#fetchProg'));
+  try {
+    const r = await fetchPage(u);
+    pg.done();
+    state.raw = r.html; state.url = r.url;
+    run(r.html, r.url);
+    $('#fetched').className = 'fetched show';
+    $('#fetched').innerHTML = `<b>${esc(R.title || r.url)}</b><span>${esc(r.url)} · ${fmt(R.links.length)} links found</span>`;
+  } catch (err) {
+    pg.fail();
+    note.className = 'note err'; note.textContent = 'Couldn\'t fetch that page. Some sites block automated readers. Open it, view the page source (Ctrl+U), copy it, and use "Paste HTML".';
+  } finally { btn.disabled = false; btn.textContent = 'Check links'; note.hidden = false; }
+});
+
+/* ---------- exports ---------- */
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2200); }
+async function copyText(s) { try { await navigator.clipboard.writeText(s); return true; } catch (e) { const ta = document.createElement('textarea'); ta.value = s; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (_) {} ta.remove(); return ok; } }
+function report() {
+  const L = R.links, inn = L.filter(l => l.kind === 'internal'), ext = L.filter(l => l.kind === 'external');
+  const out = ['Internal link report', '='.repeat(20)];
+  if (R.title) out.push('Page: ' + R.title);
+  if (R.page) out.push('URL: ' + R.page);
+  out.push(`Links: ${L.length} · internal ${inn.length} · external ${ext.length} · in body text ${L.filter(l => l.loc === 'body' && l.kind !== 'jump').length}`, '');
+  R.issues.filter(i => i.n).forEach(i => out.push(`Issue: ${i.t} (${i.n})`));
+  out.push('', 'Internal links:'); inn.forEach(l => out.push(`  ${l.anchor || '(no text)'} → ${l.path} [${l.loc}]`));
+  out.push('', 'External links:'); ext.forEach(l => out.push(`  ${l.anchor || '(no text)'} → ${l.href} [${l.loc}]${l.nofollow ? ' nofollow' : ''}`));
+  return out.join('\n');
+}
+function csv() {
+  const q = s => '"' + String(s).replace(/"/g, '""') + '"';
+  const rows = [['Type', 'Where', 'Anchor text', 'Anchor type', 'URL', 'rel', 'New tab'].map(q).join(',')];
+  R.links.forEach(l => rows.push([l.kind, l.loc, l.anchor, l.atype, l.href, l.rel.join(' '), l.blank ? 'yes' : 'no'].map(q).join(',')));
+  const blob = new Blob(['﻿' + rows.join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'links.csv'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+$('#panel').addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]'); if (!b || !R) return;
+  if (b.dataset.act === 'copy') toast(await copyText(report()) ? 'Report copied' : 'Copy failed');
+  if (b.dataset.act === 'csv') { csv(); toast('CSV downloaded'); }
+});
+
+/* ---------- start ---------- */
+renderEmpty();
+const h = new URLSearchParams(location.hash.slice(1));
+if (h.get('url')) { $('#url').value = h.get('url'); $('#urlForm').requestSubmit(); }
+})();
+</script>
+</body>
+</html>

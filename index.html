@@ -79,6 +79,22 @@ button{cursor:pointer;background:none;border:0}
 .hero{background:var(--ink);color:#fff;padding:100px 0 84px;position:relative}
 .hero h1{font-size:clamp(28px,3.4vw,40px);font-weight:700;line-height:1.1;letter-spacing:-.03em}
 .hero p.lead{font-size:16px;color:rgba(255,255,255,.62);margin-top:8px;text-wrap:pretty}
+.hero-row{display:flex;justify-content:space-between;align-items:flex-start;gap:32px}
+.hero-main{min-width:0}
+.peek{flex:0 0 330px;display:flex;flex-direction:column;gap:8px;padding:14px 16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.04);color:#fff;transition:border-color .15s,background .15s}
+.peek:hover{border-color:var(--signal-hi);background:rgba(255,107,66,.08)}
+.peek-eb{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--signal-hi)}
+.peek-q{font-size:14.5px;font-weight:600;line-height:1.35}
+.peek-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(255,255,255,.1);border-bottom:1px solid rgba(255,255,255,.1)}
+.peek-stats span{padding:6px 0;font-size:11.5px;color:rgba(255,255,255,.5);display:flex;flex-direction:column}
+.peek-stats span+span{padding-left:10px;border-left:1px solid rgba(255,255,255,.1)}
+.peek-stats b{font-size:18px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;line-height:1.2}
+.peek-go{font-size:13px;font-weight:600;color:var(--signal-hi)}
+.progress{margin-top:10px}
+.pg-top{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;color:var(--muted);margin-bottom:6px}
+.pg-top b{font-variant-numeric:tabular-nums;color:var(--fg);font-weight:600}
+.pg-track{height:6px;background:var(--soft)}
+.pg-track i{display:block;height:100%;width:0;background:var(--signal);transition:width .12s linear}
 
 /* ---------- checker ---------- */
 .checker{background:var(--soft-2);padding:0 0 96px}
@@ -361,6 +377,8 @@ footer{background:var(--ink);color:#fff;border-top:1px solid rgba(255,255,255,.0
 @media (max-width:900px){
   .nav,.hdr .btn{display:none}
   .menu-btn{display:grid}
+  .hero-row{flex-direction:column;gap:16px}
+  .peek{flex:none;width:100%}
   .hdr.open .nav{display:flex;flex-direction:column;align-items:stretch;position:absolute;top:64px;left:0;right:0;background:var(--ink);padding:12px 16px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
   .hdr.open .dd-menu{position:static;width:auto;margin-top:6px}
   .split{grid-template-columns:1fr;gap:40px}
@@ -372,6 +390,8 @@ footer{background:var(--ink);color:#fff;border-top:1px solid rgba(255,255,255,.0
 @media (max-width:640px){
   .wrap{padding:0 16px}
   .hero{padding:88px 0 72px}
+  .peek{flex-direction:row;align-items:center;justify-content:space-between;padding:10px 12px}
+  .peek-q,.peek-stats{display:none}
   .card{padding:18px;border-radius:0}
   .kw-grid{grid-template-columns:1fr}
   .set-grid{grid-template-columns:1fr}
@@ -420,6 +440,7 @@ footer{background:var(--ink);color:#fff;border-top:1px solid rgba(255,255,255,.0
           <a href="#checker" data-goto="distribution" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16v-3"/><path d="M11 16V8"/><path d="M15 16v-5"/><path d="M19 16V6"/></svg></span><span><b>Distribution map</b><span>Where your keyword clusters, by section</span></span></a>
           <a href="#checker" data-goto="readability" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></svg></span><span><b>Word counter &amp; readability</b><span>Words, sentences, reading time, Flesch score</span></span></a>
           <a href="#checker" data-goto="compare" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></span><span><b>Competitor compare</b><span>Your density next to a ranking page's</span></span></a>
+          <a href="/internal-link-checker/" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></span><span><b>Internal link checker</b><span>Every internal and external link, with its anchor text</span></span></a>
         </div>
       </div>
       <a href="#how">How it works</a>
@@ -434,9 +455,17 @@ footer{background:var(--ink);color:#fff;border-top:1px solid rgba(255,255,255,.0
 
 <main id="top">
 <section class="hero">
-  <div class="wrap">
-    <h1>Keyword Density Checker</h1>
-    <p class="lead">Paste text or a URL. See the density of every phrase and exactly how many uses to add or cut.</p>
+  <div class="wrap hero-row">
+    <div class="hero-main">
+      <h1>Keyword Density Checker</h1>
+      <p class="lead">Paste text or a URL. See the density of every phrase and exactly how many uses to add or cut.</p>
+    </div>
+    <a class="peek" id="peek" href="/internal-link-checker/">
+      <span class="peek-eb">New · Internal Link Checker</span>
+      <span class="peek-q">How many links is your page really passing on, and with what words?</span>
+      <span class="peek-stats"><span><b>?</b>internal</span><span><b>?</b>external</span><span><b>?</b>anchor texts</span></span>
+      <span class="peek-go" id="peekGo">Check your links →</span>
+    </a>
   </div>
 </section>
 
@@ -468,6 +497,7 @@ footer{background:var(--ink);color:#fff;border-top:1px solid rgba(255,255,255,.0
               <input class="inp" id="url" type="text" inputmode="url" placeholder="https://example.com/your-article" autocomplete="off">
               <button class="btn-dark" id="fetchBtn" type="submit">Analyse URL</button>
             </form>
+            <div class="progress" id="fetchProg" hidden><div class="pg-top"><span>Connecting to the page</span><b>0%</b></div><div class="pg-track"><i></i></div></div>
             <div class="fetched" id="fetched"></div>
           </div>
           <div class="note" id="srcNote">Text is analysed as you type and saved only in this browser.</div>
@@ -529,6 +559,7 @@ footer{background:var(--ink);color:#fff;border-top:1px solid rgba(255,255,255,.0
             <div class="cmp-in">
               <div class="note" style="margin:0 0 2px">Paste the text of a page that ranks for your keyword, or fetch its URL. Same settings, side by side.</div>
               <form class="url-row" id="cmpForm"><input class="inp" id="cmpUrl" placeholder="https://competitor.com/ranking-page" aria-label="Competitor URL"><button class="btn-dark" id="cmpBtn" type="submit">Fetch</button></form>
+              <div class="progress" id="cmpProg" hidden><div class="pg-top"><span>Connecting to the page</span><b>0%</b></div><div class="pg-track"><i></i></div></div>
               <textarea id="cmpTxt" placeholder="…or paste the competitor's text or HTML here"></textarea>
               <div class="note" id="cmpNote" style="margin:0"></div>
             </div>
@@ -685,7 +716,7 @@ status: <span class="g">IN_RANGE</span></pre>
 <footer>
   <div class="wrap">
     <div class="fcols">
-      <div><h4>Tools</h4><a href="#checker" data-goto="keywords">Keyword density checker</a><a href="#checker" data-goto="placement">Keyword placement audit</a><a href="#checker" data-goto="distribution">Keyword distribution map</a><a href="#checker" data-goto="readability">Word counter</a><a href="#checker" data-goto="compare">Competitor density compare</a></div>
+      <div><h4>Tools</h4><a href="#checker" data-goto="keywords">Keyword density checker</a><a href="#checker" data-goto="placement">Keyword placement audit</a><a href="#checker" data-goto="distribution">Keyword distribution map</a><a href="#checker" data-goto="readability">Word counter</a><a href="#checker" data-goto="compare">Competitor density compare</a><a href="/internal-link-checker/">Internal link checker</a></div>
       <div><h4>Guides</h4><a href="#ideal">What is keyword density?</a><a href="#ideal">Ideal keyword density</a><a href="#faq">Keyword stuffing, explained</a><a href="#compare-tools">Ways to check density</a></div>
       <div><h4>Company</h4><a href="#method">Our method</a><a href="#how">How it works</a><a href="mailto:hello@keyworddensitychecker.co">Contact</a></div>
       <div><h4>Legal</h4><a href="#method">Privacy</a><a href="#faq">Terms of use</a></div>
@@ -1193,29 +1224,48 @@ async function fetchPage(u) {
   }
   throw new Error('fetch failed');
 }
+// eases toward 92% while waiting, jumps to 100% when the page arrives
+function startProgress(box) {
+  const bar = box.querySelector('i'), pct = box.querySelector('b'), lbl = box.querySelector('span');
+  let p = 0;
+  const paint = () => { bar.style.width = p + '%'; pct.textContent = Math.round(p) + '%'; lbl.textContent = p >= 100 ? 'Done' : p < 30 ? 'Connecting to the page' : p < 70 ? 'Downloading the page' : 'Reading the content'; };
+  box.hidden = false; paint();
+  const t = setInterval(() => { p = Math.min(92, p + (92 - p) * 0.05 + 0.15); paint(); }, 120);
+  return { done() { clearInterval(t); p = 100; paint(); setTimeout(() => { box.hidden = true; }, 500); }, fail() { clearInterval(t); box.hidden = true; } };
+}
+function updatePeek() {
+  const has = state.mode === 'url' && state.url;
+  $('#peek').href = '/internal-link-checker/' + (has ? '#url=' + encodeURIComponent(state.url) : '');
+  $('#peekGo').textContent = has ? 'Check the links on this page →' : 'Check your links →';
+}
 $('#urlForm').addEventListener('submit', async e => {
   e.preventDefault();
   const u = $('#url').value; if (!u.trim()) return;
   const btn = $('#fetchBtn'), note = $('#srcNote');
-  btn.disabled = true; btn.textContent = 'Fetching…'; note.className = 'note'; note.textContent = 'Fetching the page…';
+  btn.disabled = true; btn.textContent = 'Fetching…'; note.hidden = true; $('#fetched').className = 'fetched';
+  const pg = startProgress($('#fetchProg'));
   try {
     const r = await fetchPage(u);
+    pg.done();
     state.urlRaw = r.html; state.url = r.url;
     run();
     const d = R && R.doc;
     $('#fetched').className = 'fetched show';
     $('#fetched').innerHTML = `<b>${esc(d && d.title || r.url)}</b><span>${esc(r.url)} · ${fmt(R ? R.total : 0)} words of ${$('#oMain').checked ? 'main content' : 'visible text'}</span>`;
     note.className = 'note ok'; note.textContent = 'Page fetched. Placement checks now include the title, meta, slug and alt text.';
+    updatePeek();
   } catch (err) {
+    pg.fail();
     note.className = 'note err'; note.textContent = 'Couldn\'t fetch that page. Some sites block automated readers. Open it, copy the text or page source (Ctrl+U), and paste it under "Paste text or HTML".';
-  } finally { btn.disabled = false; btn.textContent = 'Analyse URL'; }
+  } finally { btn.disabled = false; btn.textContent = 'Analyse URL'; note.hidden = false; }
 });
 $('#cmpForm').addEventListener('submit', async e => {
   e.preventDefault();
   const u = $('#cmpUrl').value; if (!u.trim()) return;
-  const btn = $('#cmpBtn'), note = $('#cmpNote'); btn.disabled = true; btn.textContent = 'Fetching…'; note.className = 'note'; note.textContent = 'Fetching…';
-  try { const r = await fetchPage(u); state.cmpRaw = r.html; state.cmpUrl = r.url; $('#cmpTxt').value = ''; note.className = 'note ok'; note.textContent = 'Fetched ' + r.url; if (R) renderCompare(); }
-  catch (err) { note.className = 'note err'; note.textContent = 'Couldn\'t fetch that page. Paste its text or HTML instead.'; }
+  const btn = $('#cmpBtn'), note = $('#cmpNote'); btn.disabled = true; btn.textContent = 'Fetching…'; note.textContent = '';
+  const pg = startProgress($('#cmpProg'));
+  try { const r = await fetchPage(u); pg.done(); state.cmpRaw = r.html; state.cmpUrl = r.url; $('#cmpTxt').value = ''; note.className = 'note ok'; note.textContent = 'Fetched ' + r.url; if (R) renderCompare(); }
+  catch (err) { pg.fail(); note.className = 'note err'; note.textContent = 'Couldn\'t fetch that page. Paste its text or HTML instead.'; }
   finally { btn.disabled = false; btn.textContent = 'Fetch'; }
 });
 $('#cmpTxt').addEventListener('input', () => { state.cmpRaw = ''; state.cmpUrl = ''; clearTimeout(tmr); tmr = setTimeout(() => R && renderCompare(), 250); });
@@ -1264,6 +1314,7 @@ function setMode(m) {
   state.mode = m;
   $$('[data-mode]').forEach(b => { b.classList.toggle('on', b.dataset.mode === m); b.setAttribute('aria-selected', b.dataset.mode === m); });
   $('#modeText').hidden = m !== 'text'; $('#modeUrl').hidden = m !== 'url';
+  updatePeek();
   const note = $('#srcNote'); note.className = 'note';
   note.textContent = m === 'url' ? 'Enter any public page. It\'s read through a public page reader, then analysed in your browser.' : 'Text is analysed as you type and saved only in this browser.';
   run();
