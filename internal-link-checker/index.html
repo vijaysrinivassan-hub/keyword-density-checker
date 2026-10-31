@@ -448,6 +448,15 @@ footer{background:var(--ink);color:#fff;border-top:1px solid rgba(255,255,255,.0
 .p-link{display:block;margin:0 22px 18px;font-size:13.5px;font-weight:600;color:var(--signal-hi)}
 .p-link:hover{text-decoration:underline}
 .view-row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.rx-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:12px}
+.rx-ctl label{font-size:13.5px;color:var(--text);display:flex;align-items:center;gap:8px}
+.rx-ctl select{border:1px solid var(--line-2);padding:8px 10px;font-size:13.5px;background:#fff}
+.rx-ctl .btn-dark{height:40px}
+.rx-sum{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px;margin:14px 0 10px}
+.rx-sum b{font-variant-numeric:tabular-nums}
+.rx-key{margin-bottom:14px}
+.rx-key .inner{padding:14px 16px;display:grid;gap:10px}
+.rx-stop{margin-left:auto}
 </style>
 </head>
 <body>
@@ -532,11 +541,13 @@ footer{background:var(--ink);color:#fff;border-top:1px solid rgba(255,255,255,.0
             <button data-tab="external" role="tab">External <span class="ct" id="cEx"></span></button>
             <button data-tab="anchors" role="tab">Anchor texts</button>
             <button data-tab="issues" role="tab">Issues <span class="ct" id="cIs"></span></button>
+            <button data-tab="received" role="tab">Links received <span class="ct" id="cRx"></span></button>
           </div>
           <div class="pane on" id="p-internal"></div>
           <div class="pane" id="p-external"></div>
           <div class="pane" id="p-anchors"></div>
           <div class="pane" id="p-issues"></div>
+          <div class="pane" id="p-received"></div>
         </div>
       </div>
       <aside class="panel" id="panel" aria-live="polite"></aside>
@@ -583,6 +594,7 @@ footer{background:var(--ink);color:#fff;border-top:1px solid rgba(255,255,255,.0
       <details><summary>How many internal links should a page have?</summary><p>There's no fixed number. Most well-linked articles have a handful of contextual internal links in the body text, each pointing to a page that genuinely helps the reader. Navigation and footer links come on top of that. Use the "Body text" filter to count only the ones in your content.</p></details>
       <details><summary>Why does the checker show more links than I added?</summary><p>Menus, headers, footers and sidebars add links to every page. Switch the filter to "Body text" to see only the links inside your content.</p></details>
       <details><summary>Does this check whether links are broken?</summary><p>No. It lists and classifies every link on the page and its anchor text. It doesn't visit each linked page, so it can't report status codes or redirects.</p></details>
+      <details><summary>Can it show which pages link to my page?</summary><p>Yes. Fetch your page by URL, then open "Links received". The checker reads the site's sitemap, opens each page, and lists every page that links to yours with the anchor text it uses. Pages that aren't in the sitemap aren't scanned. Links that appear on nearly every page, like menus and footers, are marked "sitewide".</p></details>
       <details><summary>What counts as a generic anchor?</summary><p>Anchors such as "click here", "read more", "learn more", "here" and "this link". They tell readers and search engines nothing about the page they lead to.</p></details>
       <details><summary>Is the page I check stored?</summary><p>No. Pasted HTML is analysed in your browser. A URL is fetched through a public page reader so the browser can read it, then analysed in your browser. Some sites block automated readers; if a fetch fails, paste the page source instead.</p></details>
     </div>
@@ -722,6 +734,7 @@ function issuesOf(links) {
 
 function run(html, pageUrl) {
   R = analyse(html, pageUrl);
+  if (!RX.target || RX.target !== (R.page && normUrl(R.page))) resetScan();
   R.issues = issuesOf(R.links);
   renderAll();
 }
@@ -732,8 +745,9 @@ function renderAll() { renderPanel(); renderLocSeg(); renderCounts(); renderTab(
 function renderEmpty() {
   $('#panel').innerHTML = `<div class="p-top"><span class="eb-d">Links on this page</span></div><div class="p-empty"><b>Enter a page to start</b>Fetch a URL or paste the page's HTML. You'll see every internal and external link, where it sits, and its anchor text.</div><div class="privacy">${I.lock}<span>Runs in your browser. Nothing you paste is uploaded.</span></div>`;
   ['internal', 'external', 'anchors', 'issues'].forEach(t => $('#p-' + t).innerHTML = '<div class="empty">Add a page in step 1 to see its links.</div>');
+  renderReceived();
   $('#locSeg').innerHTML = LOCS.map(([v, l]) => `<button type="button" data-loc="${v}" class="${v === 'all' ? 'on' : ''}" disabled>${l}</button>`).join('');
-  ['cIn', 'cEx', 'cIs'].forEach(id => $('#' + id).textContent = '');
+  ['cIn', 'cEx', 'cIs', 'cRx'].forEach(id => $('#' + id).textContent = '');
 }
 function renderPanel() {
   const L = R.links, inn = L.filter(l => l.kind === 'internal'), ext = L.filter(l => l.kind === 'external'), oth = L.length - inn.length - ext.length;
@@ -772,7 +786,7 @@ function renderCounts() {
   $('#cEx').textContent = fmt(R.links.filter(l => l.kind === 'external' && inLoc(l)).length);
   $('#cIs').textContent = fmt(R.issues.reduce((a, i) => a + (i.n ? 1 : 0), 0));
 }
-function renderTab() { if (!R) return; ({ internal: () => renderLinks('internal'), external: () => renderLinks('external'), anchors: renderAnchors, issues: renderIssues })[state.tab](); }
+function renderTab() { if (!R) return; ({ internal: () => renderLinks('internal'), external: () => renderLinks('external'), anchors: renderAnchors, issues: renderIssues, received: renderReceived })[state.tab](); }
 
 const LOCNAME = { body: 'Body text', nav: 'Navigation', header: 'Header', footer: 'Footer', sidebar: 'Sidebar' };
 function badges(l) {
@@ -828,6 +842,145 @@ function renderIssues() {
     <div class="note">Issues count links anywhere on the page, menus included. This checker reads the page; it doesn't open each link, so it can't spot broken links.</div>`;
 }
 
+/* ---------- links received: scan the site's sitemap ---------- */
+const KEY_STORE = 'kdc:jina-key';
+const getKey = () => { try { return localStorage.getItem(KEY_STORE) || ''; } catch (e) { return ''; } };
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const normUrl = u => { const x = new URL(u); return hostKey(x.hostname) + ((x.pathname.replace(/\/+$/, '') || '/') + x.search); };
+let RX = {};
+function resetScan() { if (RX.ctl) RX.ctl.abort(); RX = { status: 'idle', target: R && R.page ? normUrl(R.page) : '', scanned: 0, total: 0, failed: 0, found: [], hideSitewide: true }; }
+resetScan();
+
+function readerHeaders(extra) {
+  const h = Object.assign({}, extra); const k = getKey();
+  if (k) h.Authorization = 'Bearer ' + k;
+  return h;
+}
+async function readerText(url, signal) {
+  const r = await fetch('https://r.jina.ai/' + url, { headers: readerHeaders({ 'X-Return-Format': 'text' }), signal });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.text();
+}
+// asks the reader for the link list only: far fewer tokens than the full page
+async function pageLinks(url, signal) {
+  const r = await fetch('https://r.jina.ai/' + url, { headers: readerHeaders({ 'Accept': 'application/json', 'X-With-Links-Summary': 'all', 'X-Return-Format': 'text', 'X-Retain-Images': 'none', 'X-Timeout': '20' }), signal });
+  if (r.status === 429) { const e = new Error('busy'); e.retry = true; throw e; }
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const d = await r.json(); const L = d && d.data && d.data.links;
+  return Array.isArray(L) ? L : (L && typeof L === 'object' ? Object.entries(L) : []);
+}
+async function sitemapPages(origin, limit, signal) {
+  const host = hostKey(new URL(origin).hostname), pages = new Set(), seen = new Set(), queue = [];
+  try { const t = await readerText(origin + '/robots.txt', signal); (t.match(/^\s*sitemap:\s*\S+/gim) || []).forEach(l => queue.push(l.replace(/^\s*sitemap:\s*/i, '').trim())); } catch (e) { if (signal.aborted) throw e; }
+  if (!queue.length) queue.push(origin + '/sitemap.xml', origin + '/sitemap_index.xml', origin + '/wp-sitemap.xml');
+  while (queue.length && pages.size < limit && seen.size < 30) {
+    const sm = queue.shift(); if (seen.has(sm)) continue; seen.add(sm);
+    let xml; try { xml = await readerText(sm, signal); } catch (e) { if (signal.aborted) throw e; continue; }
+    const locs = [...xml.matchAll(/<loc>\s*(?:<!\[CDATA\[)?\s*([^<\]\s]+)/gi)].map(m => m[1].replace(/&amp;/g, '&'));
+    if (/<sitemapindex/i.test(xml)) locs.forEach(l => queue.push(l));
+    else locs.forEach(l => { try { if (pages.size < limit && hostKey(new URL(l).hostname) === host && !/\.(jpe?g|png|gif|webp|svg|pdf|zip|mp4|mp3|xml)(\?|$)/i.test(l)) pages.add(l); } catch (e) {} });
+    if (pages.size && !queue.length) break;
+  }
+  return [...pages];
+}
+async function startScan() {
+  if (!R || !R.page) return;
+  resetScan();
+  const ctl = new AbortController(); RX.ctl = ctl; RX.status = 'sitemap'; renderReceived();
+  const max = +($('#rxMax') ? $('#rxMax').value : 500), key = getKey();
+  let urls;
+  try { urls = (await sitemapPages(new URL(R.page).origin, max + 1, ctl.signal)).filter(u => normUrl(u) !== RX.target).slice(0, max); }
+  catch (e) { if (ctl.signal.aborted) return; urls = []; }
+  if (!urls.length) { RX.status = 'nositemap'; renderReceived(); return; }
+  RX.status = 'running'; RX.total = urls.length; renderReceived();
+  // without a key the free reader allows about 20 pages a minute per visitor, so pace requests
+  const workers = key ? 6 : 2, gap = key ? 0 : 3400;
+  let next = 0, slot = Date.now();
+  async function worker() {
+    while (next < urls.length && !ctl.signal.aborted) {
+      const u = urls[next++];
+      if (gap) { const at = Math.max(Date.now(), slot); slot = at + gap; await sleep(at - Date.now()); if (ctl.signal.aborted) return; }
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const links = await pageLinks(u, ctl.signal);
+          const seenHere = new Set();
+          links.forEach(([a, href]) => {
+            let n; try { n = normUrl(new URL(href, u).href); } catch (e) { return; }
+            const anchor = String(a || '').replace(/\s+/g, ' ').trim();
+            if (n === RX.target && !seenHere.has(anchor.toLowerCase())) { seenHere.add(anchor.toLowerCase()); RX.found.push({ src: u, anchor }); }
+          });
+          break;
+        } catch (e) {
+          if (ctl.signal.aborted) return;
+          if (e.retry && attempt < 2) { await sleep(6000 * (attempt + 1)); continue; }
+          RX.failed++; break;
+        }
+      }
+      RX.scanned++; paintScan();
+    }
+  }
+  await Promise.all(Array.from({ length: workers }, worker));
+  if (!ctl.signal.aborted) { RX.status = 'done'; renderReceived(); }
+}
+function sitewideAnchors() {
+  const pagesWith = new Map();
+  RX.found.forEach(f => { const k = f.anchor.toLowerCase(); if (!pagesWith.has(k)) pagesWith.set(k, new Set()); pagesWith.get(k).add(f.src); });
+  const min = Math.max(6, Math.ceil(RX.scanned * 0.5));
+  return new Set([...pagesWith.entries()].filter(([, s]) => s.size >= min).map(([k]) => k));
+}
+function paintScan() {
+  const box = $('#rxProg'); if (!box) return;
+  const p = RX.total ? RX.scanned / RX.total * 100 : 0;
+  box.querySelector('i').style.width = p + '%';
+  box.querySelector('b').textContent = Math.round(p) + '%';
+  box.querySelector('span').textContent = `Scanned ${fmt(RX.scanned)} of ${fmt(RX.total)} pages · ${fmt(new Set(RX.found.map(f => f.src)).size)} link here`;
+}
+function renderReceived() {
+  const el = $('#p-received'); if (!el) return;
+  $('#cRx').textContent = RX.status === 'done' ? fmt(new Set(RX.found.map(f => f.src)).size) : '';
+  if (!R || !R.page) { el.innerHTML = '<div class="empty">Fetch a page by URL first. The scan reads the rest of that site to find the pages that link to it.</div>'; return; }
+  const key = getKey(), host = new URL(R.page).hostname;
+  const keyBox = `<details class="settings rx-key"><summary>Faster scans with a Jina key <span>${key ? 'Key saved in this browser' : 'Optional'}</span></summary><div class="inner">
+      <p class="note" style="margin:0">Without a key, scans use the free page reader at about 20 pages a minute. With a free key from jina.ai, about 100 or more. Your key is saved only in this browser and sent only to Jina.</p>
+      <div class="url-row"><input class="inp" id="rxKeyIn" type="password" placeholder="jina_…" autocomplete="off"><button class="btn-dark" type="button" id="rxKeySave">Save key</button></div>
+      ${key ? '<div><button class="chip-btn" type="button" id="rxKeyClear">Remove saved key</button></div>' : ''}</div></details>`;
+  if (RX.status === 'idle') {
+    el.innerHTML = keyBox + `<div class="rx-ctl"><label for="rxMax">Pages to scan</label><select id="rxMax"><option>100</option><option>250</option><option selected>500</option><option>1000</option></select><button class="btn-dark" type="button" id="rxGo">Find pages linking here</button></div>
+      <div class="note">Reads ${esc(host)}'s sitemap, opens each page, and lists every page that links to <b>${esc(new URL(R.page).pathname)}</b>. About ${key ? '5' : '25'} minutes for 500 pages ${key ? 'with your key' : 'without a key'}. Keep this tab open while it runs.</div>`;
+    return;
+  }
+  if (RX.status === 'sitemap' || RX.status === 'running') {
+    el.innerHTML = `<div class="rx-ctl"><span style="font-size:14px;font-weight:600">${RX.status === 'sitemap' ? 'Reading the sitemap…' : 'Scanning the site'}</span><button class="chip-btn rx-stop" type="button" id="rxStop">Stop</button></div>
+      <div class="progress" id="rxProg"><div class="pg-top"><span>Reading the sitemap</span><b>0%</b></div><div class="pg-track"><i></i></div></div>`;
+    if (RX.status === 'running') paintScan();
+    return;
+  }
+  if (RX.status === 'nositemap') {
+    el.innerHTML = keyBox + `<div class="empty">No sitemap found for ${esc(host)} (checked robots.txt, /sitemap.xml, /sitemap_index.xml and /wp-sitemap.xml), or the reader couldn't open it. The scan needs a sitemap to know which pages exist.</div><div class="more"><button class="chip-btn" type="button" id="rxAgain">Try again</button></div>`;
+    return;
+  }
+  // done or stopped
+  const sw = sitewideAnchors();
+  const shown = RX.found.filter(f => !(RX.hideSitewide && sw.has(f.anchor.toLowerCase())));
+  const bySrc = new Map(); shown.forEach(f => { if (!bySrc.has(f.src)) bySrc.set(f.src, []); bySrc.get(f.src).push(f.anchor); });
+  const anchors = new Map(); shown.forEach(f => anchors.set(f.anchor || '(no text)', (anchors.get(f.anchor || '(no text)') || 0) + 1));
+  const pagesAll = new Set(RX.found.map(f => f.src)).size;
+  const head = `<div class="rx-sum"><span><b>${fmt(pagesAll)}</b> of ${fmt(RX.scanned)} pages link here</span><span><b>${fmt(new Set(RX.found.map(f => f.anchor.toLowerCase())).size)}</b> different anchor texts</span>${RX.failed ? `<span style="color:var(--muted-2)">${fmt(RX.failed)} pages couldn't be read</span>` : ''}${RX.status === 'stopped' ? '<span style="color:var(--muted-2)">Stopped early</span>' : ''}</div>
+    <div class="rx-ctl">${sw.size ? `<label class="opt" style="gap:10px"><span class="switch"><input type="checkbox" id="rxHide" ${RX.hideSitewide ? 'checked' : ''}><span></span></span>Hide sitewide links (menus and footers)</label>` : ''}<button class="chip-btn rx-stop" type="button" id="rxAgain">Scan again</button></div>`;
+  if (!RX.found.length) { el.innerHTML = head + '<div class="issue"><h4>No scanned page links here<b>0</b></h4><p>This page may be an orphan. Add links to it from related pages, using anchor text that describes it.</p></div>'; return; }
+  el.innerHTML = head + `<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>#</th><th>Linking page</th><th>Anchor text</th></tr></thead><tbody>${[...bySrc.entries()].map(([src, a], i) => `<tr style="cursor:default"><td class="rank">${i + 1}</td><td class="kw"><a href="${esc(src)}" target="_blank" rel="noopener" style="color:var(--fg)">${esc(new URL(src).pathname || '/')}</a></td><td><div class="anc-chips">${a.map(x => `<span>${esc(x || '(no text)')}</span>`).join('')}</div></td></tr>`).join('') || '<tr><td colspan="3" class="muted">Only sitewide links point here. Turn off the filter to see them.</td></tr>'}</tbody></table></div>
+    <div class="sec-tbl"><span class="eb">Anchor texts pointing here</span><div class="anc-chips" style="margin-top:10px">${[...anchors.entries()].sort((x, y) => y[1] - x[1]).map(([a, n]) => `<span>${esc(a)}<b>×${n}</b></span>`).join('')}</div></div>
+    ${sw.size ? `<div class="note">"Sitewide" = the same link appears on at least half the scanned pages, which usually means a menu or footer: ${[...sw].map(esc).join(', ')}.</div>` : ''}`;
+}
+$('#p-received').addEventListener('click', e => {
+  const id = e.target.id;
+  if (id === 'rxGo' || id === 'rxAgain') startScan();
+  if (id === 'rxStop') { if (RX.ctl) RX.ctl.abort(); RX.status = 'stopped'; renderReceived(); }
+  if (id === 'rxKeySave') { const v = $('#rxKeyIn').value.trim(); if (!v) return; try { localStorage.setItem(KEY_STORE, v); toast('Key saved in this browser'); } catch (err) { toast('Couldn\'t save the key in this browser'); } renderReceived(); }
+  if (id === 'rxKeyClear') { try { localStorage.removeItem(KEY_STORE); } catch (err) {} toast('Key removed'); renderReceived(); }
+});
+$('#p-received').addEventListener('change', e => { if (e.target.id === 'rxHide') { RX.hideSitewide = e.target.checked; renderReceived(); } });
+
 /* ---------- peek ---------- */
 function updatePeek() {
   const page = R && R.page;
@@ -864,8 +1017,8 @@ async function fetchPage(u) {
   u = u.trim(); if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
   new URL(u);
   const tries = [
-    { url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
-    { url: 'https://r.jina.ai/' + u, headers: { 'X-Return-Format': 'html' } }
+    { url: 'https://r.jina.ai/' + u, headers: { 'X-Return-Format': 'html' } },
+    { url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) }
   ];
   for (const t of tries) {
     const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 20000);

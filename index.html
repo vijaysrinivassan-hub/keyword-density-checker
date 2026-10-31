@@ -1209,8 +1209,8 @@ async function fetchPage(u) {
   u = u.trim(); if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
   new URL(u);
   const tries = [
-    { url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
-    { url: 'https://r.jina.ai/' + u, headers: { 'X-Return-Format': 'html' } }
+    { url: 'https://r.jina.ai/' + u, headers: { 'X-Return-Format': 'html' } },
+    { url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) }
   ];
   for (const t of tries) {
     const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 20000);
