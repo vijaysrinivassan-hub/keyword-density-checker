@@ -1,0 +1,26 @@
+# Keyword Density Checker
+
+> Free online keyword density checker at https://keyworddensitychecker.co/. Paste text, HTML or a URL to see the density of every 1, 2, 3 and 4-word phrase, check a target keyword against an ideal range, and get the exact number of uses to add or cut. No sign-up, no word limit; pasted text is analysed in the browser and never uploaded.
+
+## What the tool does
+
+- Phrase density: counts and density % for 1, 2, 3 and 4-word phrases, with stop-word filtering (English, Spanish, French, German), a custom ignore list and a minimum word length.
+- Goal check: set a primary keyword, secondary keywords and an ideal range (default 0.5–2.5%). The tool reports the status (missing, under-used, in range, running hot, stuffing risk) and how many uses to add or cut.
+- Placement audit: 9 checks per keyword: title tag, meta description, URL slug, H1, subheadings, first 100 words, last 100 words, image alt text, and spread through the text.
+- Distribution: a map of where the keyword appears from start to end, the longest stretch without it, and density per section.
+- Competitor compare: density side by side with a ranking page, with "gap" terms the competitor uses and the draft does not.
+- Readability: words, characters, sentences, paragraphs, reading and speaking time, Flesch reading ease, share of long sentences.
+- Export: CSV, copyable text report, share link with settings, print/PDF.
+
+## How density is calculated
+
+- Standard formula (default): density = (uses ÷ total words) × 100. 10 uses in 1,000 words = 1.0%.
+- Word-share formula (optional): density = (uses × words in phrase ÷ total words) × 100. A 2-word phrase counts double.
+- All words, including stop words, count toward the total. Multi-word phrases do not cross sentence ends, commas, colons or line breaks.
+
+## Pages
+
+- [Keyword density checker](https://keyworddensitychecker.co/#checker): the tool itself
+- [What is keyword density and what is a good number](https://keyworddensitychecker.co/#ideal): definition, both formulas, working ranges
+- [How we count](https://keyworddensitychecker.co/#method): tokenising, phrase and privacy rules
+- [FAQ](https://keyworddensitychecker.co/#faq): ideal density, keyword stuffing, stop words, limits, privacy
