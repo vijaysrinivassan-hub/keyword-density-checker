@@ -1350,6 +1350,7 @@ function save() {
   clearTimeout(saveT);
   saveT = setTimeout(() => { try { localStorage.setItem('kdc:v1', JSON.stringify({ t: $('#txt').value.slice(0, 500000), k: $('#kw1').value, s: $('#kw2').value })); } catch (e) {} }, 400);
 }
+const SAMPLE_KW = ['cold brew', 'cold brew concentrate, coffee to water ratio'];
 function restore() {
   const h = new URLSearchParams(location.hash.slice(1));
   try { const s = JSON.parse(localStorage.getItem('kdc:v1') || 'null'); if (s) { $('#txt').value = s.t || ''; $('#kw1').value = s.k || ''; $('#kw2').value = s.s || ''; } } catch (e) {}
@@ -1362,14 +1363,13 @@ function restore() {
   if (h.has('lang') && STOP[h.get('lang')]) $('#oLang').value = h.get('lang');
   if (h.has('v')) $('#oVar').checked = true;
   if (h.has('url')) { setMode('url'); $('#url').value = h.get('url'); $('#urlForm').requestSubmit(); return; }
-  // first visit: show real results straight away
-  if (!$('#txt').value.trim()) { $('#txt').value = SAMPLE; if (!$('#kw1').value) { $('#kw1').value = 'cold brew'; $('#kw2').value = 'cold brew concentrate, coffee to water ratio'; } }
+  // visitors from the old auto-sample build: start them on an empty box
+  if ($('#txt').value === SAMPLE) { $('#txt').value = ''; if ($('#kw1').value === SAMPLE_KW[0]) $('#kw1').value = ''; if ($('#kw2').value === SAMPLE_KW[1]) $('#kw2').value = ''; }
   run();
 }
 // clicking into the untouched sample selects it, so a paste replaces it
 $('#txt').addEventListener('focus', e => { if (e.target.value === SAMPLE) setTimeout(() => e.target.select(), 0); });
 // once the sample is replaced, drop the sample's keywords too
-const SAMPLE_KW = ['cold brew', 'cold brew concentrate, coffee to water ratio'];
 $('#txt').addEventListener('input', e => {
   if (e.target.value !== SAMPLE && $('#kw1').value === SAMPLE_KW[0] && $('#kw2').value === SAMPLE_KW[1]) { $('#kw1').value = ''; $('#kw2').value = ''; }
 });
