@@ -1,0 +1,1392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keyword Density Checker: Free, No Word Limit, Runs in Your Browser</title>
+<meta name="description" content="Free keyword density checker. Paste text or a URL to see 1–4 word phrase density, target keyword goals, placement checks for title, H1, meta and slug, and exactly how many uses to add or cut.">
+<link rel="canonical" href="https://keyworddensitychecker.com/">
+<meta property="og:title" content="Keyword Density Checker">
+<meta property="og:description" content="See every keyword's density, check your target keyword against a goal range, and know exactly how many uses to add or cut. No sign-up, no word limit.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"Organization","name":"Keyword Density Checker","url":"https://keyworddensitychecker.com/"},
+{"@type":"WebApplication","name":"Keyword Density Checker","url":"https://keyworddensitychecker.com/","applicationCategory":"SEO tool","operatingSystem":"Any (runs in the browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"What is keyword density?","acceptedAnswer":{"@type":"Answer","text":"Keyword density is how often a word or phrase appears in a text, shown as a percentage of the total word count. A keyword used 10 times in a 1,000-word article has a density of 1%."}},
+{"@type":"Question","name":"How is keyword density calculated?","acceptedAnswer":{"@type":"Answer","text":"The standard formula is (number of times the keyword appears ÷ total words) × 100. Some tools use a word-share formula instead, where a multi-word phrase counts once per word it contains. This checker lets you pick either."}},
+{"@type":"Question","name":"What is a good keyword density for SEO?","acceptedAnswer":{"@type":"Answer","text":"Google publishes no ideal number. Most SEO writers keep a primary keyword between about 0.5% and 2.5% and treat anything above 3% as a sign of over-use. Use the range as a guardrail, not a target to hit exactly."}},
+{"@type":"Question","name":"Does keyword density still matter?","acceptedAnswer":{"@type":"Answer","text":"Density is not a ranking factor on its own, but it is a quick way to spot two real problems: a page that never clearly names its topic, and a page that repeats a phrase so often it reads as keyword stuffing, which Google's spam policies describe."}},
+{"@type":"Question","name":"Is my text stored or uploaded?","acceptedAnswer":{"@type":"Answer","text":"No. Pasted text and uploaded files are analysed by JavaScript inside your browser tab and are never sent to a server. Only the URL fetch option requests the page you name, through a public page reader."}},
+{"@type":"Question","name":"Is there a word limit or a daily limit?","acceptedAnswer":{"@type":"Answer","text":"No. There is no word cap, no daily check limit and no account. Very long texts are limited only by your device's memory."}}
+]}
+]}
+</script>
+<style>
+:root{
+  --ink:#141416; --ink-2:#1c1c1f; --ink-3:#0f0f11;
+  --fg:#0b0b0d; --text:#262626; --muted:#404040; --muted-2:#737373; --faint:#a3a3a3;
+  --line:#e5e5e5; --line-2:#d4d4d4; --soft:#f5f5f5; --soft-2:#fafafa; --white:#fff;
+  --signal:#c53a15; --signal-hi:#ff6b42; --signal-tint:rgba(197,58,21,.06); --signal-ring:rgba(197,58,21,.4);
+  --amber:#ffb33e; --green:#1f9d55; --green-hi:#3ccf7e; --red:#e5484d;
+  --r-card:24px; --r-opt:14px; --r-btn:10px;
+  --shadow-card:0 24px 60px -30px rgba(20,20,22,.4);
+  --shadow-sm:0 1px 3px rgba(0,0,0,.1),0 1px 2px -1px rgba(0,0,0,.1);
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.5;color:var(--fg);background:var(--white);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+.wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- header ---------- */
+.hdr{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(20,20,22,.86);backdrop-filter:saturate(1.4) blur(12px);-webkit-backdrop-filter:saturate(1.4) blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
+.hdr .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;height:64px}
+.logo{display:flex;align-items:center;gap:10px;color:#fff;font-weight:800;font-size:12.5px;letter-spacing:.02em;text-transform:uppercase;white-space:nowrap}
+.logo svg{width:30px;height:22px;flex-shrink:0}
+.nav{display:flex;align-items:center;gap:2px}
+.nav>a,.nav .dd>button{font-size:14px;font-weight:500;color:rgba(255,255,255,.72);padding:7px 12px;border-radius:8px;transition:.15s;display:flex;align-items:center;gap:4px}
+.nav>a:hover,.nav .dd>button:hover,.nav .dd.open>button{color:#fff;background:rgba(255,255,255,.1)}
+.dd{position:relative}
+.dd svg{width:12px;height:12px;opacity:.7}
+.dd-menu{position:absolute;top:calc(100% + 8px);left:-8px;width:300px;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:16px;box-shadow:0 24px 60px -20px rgba(20,20,22,.45);padding:8px;display:none}
+.dd.open .dd-menu{display:block}
+.dd-menu a{display:flex;gap:12px;padding:10px;border-radius:10px;color:var(--fg)}
+.dd-menu a:hover{background:var(--soft)}
+.dd-menu .ic{width:34px;height:34px;border-radius:9px;background:var(--soft);display:grid;place-items:center;flex-shrink:0;color:var(--text)}
+.dd-menu .ic svg{width:17px;height:17px;opacity:1}
+.dd-menu b{display:block;font-size:14px;font-weight:600}
+.dd-menu span{display:block;font-size:12.5px;color:var(--muted-2);line-height:1.35}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-size:14px;font-weight:600;border-radius:999px;padding:0 20px;height:44px;white-space:nowrap;transition:.15s}
+.btn svg{width:16px;height:16px}
+.btn-signal{background:var(--signal);color:#fff}
+.btn-signal:hover{background:#ad3212}
+.btn-ghost-dark{color:#fff;border:1px solid rgba(255,255,255,.18)}
+.btn-ghost-dark:hover{background:rgba(255,255,255,.08)}
+.btn-sm{height:38px;padding:0 16px}
+.menu-btn{display:none;color:#fff;width:40px;height:40px;border-radius:10px;place-items:center}
+.menu-btn svg{width:22px;height:22px}
+
+/* ---------- hero ---------- */
+.hero{background:var(--ink);color:#fff;padding:136px 0 152px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 50% at 50% 0%,rgba(255,107,66,.13),transparent 70%);pointer-events:none}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.8);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:5px 13px}
+.pill i{width:6px;height:6px;border-radius:50%;background:var(--signal-hi)}
+.hero h1{position:relative;font-size:clamp(36px,5.6vw,64px);font-weight:700;line-height:1.06;letter-spacing:-.035em;margin:24px auto 0;max-width:900px;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--signal-hi)}
+.hero p.lead{position:relative;font-size:18px;color:rgba(255,255,255,.62);max-width:640px;margin:20px auto 0;text-wrap:pretty}
+.facts{position:relative;display:grid;grid-template-columns:repeat(4,1fr);max-width:720px;margin:36px auto 0;border:1px solid rgba(255,255,255,.1);border-radius:14px;background:rgba(255,255,255,.03);text-align:left;overflow:hidden}
+.facts div{padding:14px 16px;border-left:1px solid rgba(255,255,255,.1)}
+.facts div:first-child{border-left:0}
+.facts b{display:block;font-size:14px;font-weight:600}
+.facts span{display:block;font-size:12px;color:rgba(255,255,255,.5);line-height:1.35}
+.hero .rating{position:relative;margin-top:22px;font-size:13.5px;color:rgba(255,255,255,.55)}
+
+/* ---------- checker ---------- */
+.checker{background:var(--soft-2);padding:0 0 96px}
+.checker .grid{display:grid;grid-template-columns:minmax(0,1fr) 384px;gap:24px;align-items:start;margin-top:-104px;position:relative}
+.card{background:#fff;border:1px solid rgba(0,0,0,.1);border-radius:var(--r-card);box-shadow:var(--shadow-sm);padding:28px}
+.step{font-size:15px;font-weight:600;color:var(--fg);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.step small{font-weight:400;color:var(--muted-2);font-size:13px}
+.blk+.blk{margin-top:28px}
+.seg{display:inline-flex;background:var(--soft);border-radius:12px;padding:4px;gap:2px;flex-wrap:wrap}
+.seg button{font-size:13.5px;font-weight:500;color:var(--muted);padding:7px 14px;border-radius:9px;transition:.15s;white-space:nowrap}
+.seg button:hover{color:var(--fg)}
+.seg button.on{background:#fff;color:var(--fg);box-shadow:var(--shadow-sm);font-weight:600}
+.seg button .ct{font-size:11.5px;color:var(--faint);margin-left:4px;font-weight:500}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.tb-actions{display:flex;gap:6px;flex-wrap:wrap}
+.chip-btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;color:var(--text);border:1px solid var(--line);border-radius:999px;padding:6px 12px;background:#fff;transition:.15s}
+.chip-btn:hover{border-color:var(--line-2);background:var(--soft-2)}
+.chip-btn svg{width:14px;height:14px}
+textarea,.inp{width:100%;border:1px solid var(--line-2);border-radius:12px;background:#fff;padding:12px 14px;font-size:15px;line-height:1.55;outline:none;transition:border-color .15s,box-shadow .15s}
+textarea:focus,.inp:focus{border-color:var(--signal);box-shadow:0 0 0 3px rgba(197,58,21,.12)}
+textarea{min-height:260px;resize:vertical;font-size:14.5px}
+.inp{padding:10px 12px;font-size:14.5px}
+.url-row{display:flex;gap:8px}
+.url-row .inp{flex:1}
+.btn-dark{background:var(--ink);color:#fff;border-radius:12px;padding:0 18px;font-size:14px;font-weight:600;white-space:nowrap}
+.btn-dark:hover{background:#2a2a2e}
+.btn-dark:disabled{opacity:.5;cursor:wait}
+.note{font-size:12.5px;color:var(--muted-2);margin-top:8px;line-height:1.45}
+.note.err{color:var(--red)}
+.note.ok{color:var(--green)}
+.fetched{margin-top:12px;border:1px solid var(--line);border-radius:12px;background:var(--soft-2);padding:12px 14px;font-size:13.5px;display:none}
+.fetched.show{display:block}
+.fetched b{display:block;font-weight:600;color:var(--fg);margin-bottom:2px}
+.fetched span{color:var(--muted-2)}
+.kw-grid{display:grid;grid-template-columns:1fr 1.4fr 170px;gap:12px}
+.fld label{display:block;font-size:12.5px;font-weight:500;color:var(--muted);margin-bottom:6px}
+.range-in{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted-2)}
+.range-in .inp{width:64px;text-align:center;padding:10px 6px}
+details.settings{margin-top:16px;border:1px solid var(--line);border-radius:var(--r-opt)}
+details.settings summary{list-style:none;cursor:pointer;padding:12px 16px;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:space-between}
+details.settings summary::-webkit-details-marker{display:none}
+details.settings summary span{font-size:12.5px;font-weight:400;color:var(--muted-2)}
+details.settings[open] summary{border-bottom:1px solid var(--line)}
+.set-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px 24px;padding:16px}
+.opt{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13.5px;color:var(--text)}
+.opt small{display:block;font-size:12px;color:var(--muted-2)}
+.opt select,.opt input[type=number]{border:1px solid var(--line-2);border-radius:8px;padding:5px 8px;font-size:13px;background:#fff;max-width:170px}
+.opt input[type=number]{width:64px}
+.switch{position:relative;width:36px;height:20px;flex-shrink:0}
+.switch input{opacity:0;width:0;height:0;position:absolute}
+.switch span{position:absolute;inset:0;background:var(--line-2);border-radius:999px;transition:.15s}
+.switch span::after{content:"";position:absolute;width:16px;height:16px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.15s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.switch input:checked+span{background:var(--signal)}
+.switch input:checked+span::after{transform:translateX(16px)}
+.switch input:focus-visible+span{outline:2px solid var(--signal);outline-offset:2px}
+.set-full{grid-column:1/-1}
+.set-full .inp{margin-top:6px;font-size:13.5px}
+.rtabs{display:flex;gap:2px;border-bottom:1px solid var(--line);margin-bottom:18px;overflow-x:auto;scrollbar-width:none}
+.rtabs::-webkit-scrollbar{display:none}
+.rtabs button{font-size:14px;font-weight:500;color:var(--muted-2);padding:10px 14px;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+.rtabs button:hover{color:var(--fg)}
+.rtabs button.on{color:var(--fg);border-bottom-color:var(--signal);font-weight:600}
+.pane{display:none}
+.pane.on{display:block}
+.empty{padding:36px 16px;text-align:center;color:var(--muted-2);font-size:14px;border:1px dashed var(--line-2);border-radius:var(--r-opt)}
+.tbl-tools{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.search{position:relative}
+.search input{padding-left:32px;width:220px}
+.search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--faint)}
+.tbl{width:100%;border-collapse:collapse;font-size:14px}
+.tbl th{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-2);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap;user-select:none}
+.tbl th[data-sort]{cursor:pointer}
+.tbl th[data-sort]:hover{color:var(--fg)}
+.tbl th .arr{color:var(--signal)}
+.tbl td{padding:9px 10px;border-bottom:1px solid var(--soft);vertical-align:middle}
+.tbl td.num,.tbl th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl td.rank{color:var(--faint);width:36px;font-variant-numeric:tabular-nums}
+.tbl tbody tr{cursor:pointer;transition:background .1s}
+.tbl tbody tr:hover{background:var(--soft-2)}
+.tbl tbody tr.sel{background:var(--signal-tint)}
+.tbl tbody tr.sel td:first-child{box-shadow:inset 2px 0 0 var(--signal)}
+.tbl .kw{font-weight:500;color:var(--fg);word-break:break-word}
+.bar{width:22%;min-width:70px}
+.bar i{display:block;height:6px;border-radius:999px;background:var(--ink);min-width:2px}
+tr.sel .bar i{background:var(--signal)}
+.badge{display:inline-block;font-size:10.5px;font-weight:600;letter-spacing:.04em;padding:1px 6px;border-radius:6px;margin-left:6px;vertical-align:1px;background:var(--soft);color:var(--muted)}
+.badge.hot{background:rgba(229,72,77,.1);color:#c52a30}
+.badge.tgt{background:var(--signal-tint);color:var(--signal)}
+.use{font-size:12px;font-weight:600;color:var(--signal);opacity:0;padding:3px 8px;border-radius:6px;white-space:nowrap}
+tr:hover .use,.use:focus{opacity:1}
+.use:hover{background:var(--signal-tint)}
+.more{margin-top:12px;text-align:center}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-bottom:12px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;margin-right:6px}
+.hl{max-height:520px;overflow:auto;border:1px solid var(--line);border-radius:var(--r-opt);padding:18px 20px;font-size:14.5px;line-height:1.75;white-space:pre-wrap;word-wrap:break-word;color:var(--text);background:#fff}
+mark{border-radius:3px;padding:0 1px;color:var(--fg)}
+mark.k1{background:rgba(255,107,66,.28);box-shadow:inset 0 -2px 0 var(--signal)}
+mark.k2{background:rgba(60,140,255,.18);box-shadow:inset 0 -2px 0 #2f6fd6}
+mark.k3{background:rgba(255,179,62,.45)}
+.pl-tbl td.st{text-align:center;width:1%}
+.pl-tbl th.st{text-align:center}
+.mk{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:7px}
+.mk svg{width:14px;height:14px}
+.mk.y{background:rgba(31,157,85,.12);color:var(--green)}
+.mk.n{background:rgba(229,72,77,.1);color:#c52a30}
+.mk.na{background:var(--soft);color:var(--faint);font-size:12px}
+.pl-tbl td small{display:block;color:var(--muted-2);font-size:12px;line-height:1.35;margin-top:1px}
+.snippet{margin-top:18px;border:1px solid var(--line);border-radius:var(--r-opt);padding:16px 18px;background:var(--soft-2)}
+.snippet .eb{margin-bottom:10px}
+.snippet dl{display:grid;grid-template-columns:120px 1fr;gap:8px 14px;font-size:13.5px}
+.snippet dt{color:var(--muted-2)}
+.snippet dd{color:var(--fg);word-break:break-word}
+.snippet dd em{font-style:normal;color:var(--muted-2);font-size:12px;margin-left:6px}
+.dist-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.heat{display:grid;grid-template-columns:repeat(20,1fr);gap:4px;align-items:end;height:120px;padding:10px 12px 0;border:1px solid var(--line);border-radius:var(--r-opt);border-bottom-left-radius:0;border-bottom-right-radius:0;background:#fff}
+.heat div{background:var(--signal);border-radius:4px 4px 0 0;min-height:3px;position:relative}
+.heat div.z{background:var(--line)}
+.heat-axis{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted-2);border:1px solid var(--line);border-top:0;border-radius:0 0 var(--r-opt) var(--r-opt);padding:6px 12px;background:var(--soft-2)}
+.callout{margin-top:14px;font-size:13.5px;color:var(--text);background:var(--soft-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.callout b{font-weight:600}
+.sec-tbl{margin-top:22px}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.tile{border:1px solid var(--line);border-radius:var(--r-opt);padding:14px 16px;background:#fff}
+.tile .l{font-size:12px;color:var(--muted-2)}
+.tile .v{font-size:22px;font-weight:700;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+.tile .s{font-size:12px;color:var(--muted-2);margin-top:2px}
+.tile.big{grid-column:span 3;display:flex;align-items:center;gap:20px}
+.tile.big .v{font-size:40px}
+.read-bar{flex:1;height:8px;border-radius:999px;background:linear-gradient(90deg,#e5484d,#ffb33e 45%,#1f9d55);position:relative}
+.read-bar i{position:absolute;top:-5px;width:4px;height:18px;border-radius:2px;background:var(--ink);transform:translateX(-2px)}
+.cmp-in{display:grid;gap:10px;margin-bottom:18px}
+.cmp-in textarea{min-height:120px}
+.diff-up{color:var(--green);font-weight:600}
+.diff-dn{color:#c52a30;font-weight:600}
+
+/* results panel (dark) */
+.panel{position:sticky;top:88px;background:var(--ink);color:#fff;border:1px solid rgba(0,0,0,.1);border-radius:16px;box-shadow:0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1);overflow:hidden}
+.p-top{padding:22px 22px 18px}
+.eb-d{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.p-kw{font-size:13.5px;color:rgba(255,255,255,.75);margin-top:6px;word-break:break-word}
+.p-val{display:flex;align-items:baseline;gap:12px;margin-top:4px}
+.p-val b{font-size:44px;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.1}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.8)}
+.status i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.status.ok{color:var(--green-hi);background:rgba(60,207,126,.12)}
+.status.lo{color:var(--amber);background:rgba(255,179,62,.12)}
+.status.hi{color:var(--signal-hi);background:rgba(255,107,66,.14)}
+.status.bad{color:#ff7a7f;background:rgba(229,72,77,.16)}
+.p-sub{font-size:13px;color:rgba(255,255,255,.55);margin-top:4px}
+.gauge{position:relative;height:8px;border-radius:999px;background:rgba(255,255,255,.1);margin-top:18px}
+.gauge .zone{position:absolute;top:0;bottom:0;background:rgba(60,207,126,.35);border-radius:999px}
+.gauge .mark{position:absolute;top:-5px;width:4px;height:18px;border-radius:2px;background:#fff;transform:translateX(-2px);transition:left .25s}
+.g-scale{display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.4);margin-top:6px;font-variant-numeric:tabular-nums}
+.fix{margin:0 22px;border:1px solid rgba(197,58,21,.5);background:rgba(197,58,21,.12);border-radius:12px;padding:12px 14px}
+.fix .eb-d{color:var(--signal-hi);letter-spacing:.1em}
+.fix p{font-size:14px;font-weight:600;line-height:1.4;margin-top:4px}
+.sec-list{padding:14px 22px 0}
+.sec-list li{list-style:none;display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:7px 0;border-top:1px solid rgba(255,255,255,.08)}
+.sec-list li span:first-child{color:rgba(255,255,255,.75);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sec-list li span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:600}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.p-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;padding:18px 22px;border-top:1px solid rgba(255,255,255,.08);margin-top:18px}
+.p-stats .l{font-size:12px;color:rgba(255,255,255,.5)}
+.p-stats .v{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums}
+.warn{margin:0 22px 16px;font-size:12.5px;color:#ffb3b5;background:rgba(229,72,77,.12);border-radius:10px;padding:10px 12px;line-height:1.45}
+.p-act{display:grid;gap:8px;padding:0 22px 22px}
+.p-act .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pbtn{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13.5px;font-weight:500;border-radius:var(--r-btn);padding:10px 12px;background:rgba(255,255,255,.1);color:#fff;transition:.15s}
+.pbtn:hover{background:rgba(255,255,255,.16)}
+.pbtn svg{width:15px;height:15px}
+.pbtn.primary{background:var(--signal);font-weight:600}
+.pbtn.primary:hover{background:#ad3212}
+.p-empty{padding:28px 22px;color:rgba(255,255,255,.6);font-size:14px;line-height:1.55}
+.p-empty b{color:#fff;display:block;font-size:16px;margin-bottom:6px}
+.privacy{display:flex;gap:8px;align-items:flex-start;font-size:12px;color:rgba(255,255,255,.45);padding:12px 22px;border-top:1px solid rgba(255,255,255,.08);line-height:1.45}
+.privacy svg{width:14px;height:14px;flex-shrink:0;margin-top:1px;color:var(--green-hi)}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-size:13.5px;font-weight:500;padding:10px 16px;border-radius:999px;box-shadow:var(--shadow-card);opacity:0;transition:.2s;z-index:80;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.mchip{display:none}
+
+/* ---------- content sections ---------- */
+.sec{padding:104px 0}
+.sec.soft{background:var(--soft)}
+.sec.dark{background:var(--ink);color:#fff}
+.eb{display:inline-flex;align-items:center;gap:8px;font-size:11.2px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eb::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--signal)}
+.dark .eb{color:#a3a3a3}
+h2.h2{font-size:clamp(26px,3.4vw,44px);font-weight:700;letter-spacing:-.025em;line-height:1.12;color:#262626;margin-top:14px;max-width:820px;text-wrap:balance}
+.dark h2.h2{color:#fff}
+.sub{font-size:17px;color:var(--muted);max-width:640px;margin-top:14px;text-wrap:pretty}
+.dark .sub{color:rgba(255,255,255,.6)}
+.center{text-align:center}
+.center h2.h2,.center .sub{margin-left:auto;margin-right:auto}
+.qgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:48px}
+.qcard{background:#fff;border:1px solid rgba(0,0,0,.06);border-radius:var(--r-card);padding:28px;transition:box-shadow .2s,transform .2s}
+.qcard:hover{box-shadow:var(--shadow-card);transform:translateY(-2px)}
+.qcard .top{display:flex;gap:16px;align-items:flex-start}
+.qicon{width:44px;height:44px;border-radius:12px;background:#3f3f46;color:#fff;display:grid;place-items:center;flex-shrink:0}
+.qicon svg{width:20px;height:20px}
+.qcard h3{font-size:18px;font-weight:600;letter-spacing:-.01em;line-height:1.35;padding-top:9px}
+.how{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--signal);margin:22px 0 8px}
+.how svg{width:12px;height:12px}
+.qcard p{font-size:15px;color:var(--muted);line-height:1.6}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:48px}
+.stp{background:#fff;border-radius:var(--r-card);padding:26px;border:1px solid rgba(0,0,0,.05)}
+.stp .n{font-family:var(--mono);font-size:12px;color:var(--muted-2)}
+.stp h3{font-size:17px;font-weight:600;margin-top:28px;letter-spacing:-.01em}
+.stp p{font-size:14.5px;color:var(--muted);margin-top:8px;line-height:1.6}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+.prose p{font-size:16px;color:var(--muted);line-height:1.7;margin-top:16px}
+.prose p b{color:var(--fg);font-weight:600}
+.formula{margin-top:24px;display:grid;gap:12px}
+.fcard{border:1px solid var(--line);border-radius:16px;padding:18px 20px;background:var(--soft-2)}
+.fcard .t{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2)}
+.fcard code{display:block;font-family:var(--mono);font-size:14.5px;color:var(--fg);margin-top:8px}
+.fcard small{display:block;font-size:13px;color:var(--muted-2);margin-top:6px}
+.ranges{border:1px solid rgba(0,0,0,.08);border-radius:var(--r-card);overflow:hidden;background:#fff;box-shadow:var(--shadow-card)}
+.ranges .hd{padding:20px 24px;border-bottom:1px solid var(--line)}
+.ranges .hd b{font-size:16px;font-weight:600}
+.ranges .hd span{display:block;font-size:13px;color:var(--muted-2);margin-top:2px}
+.rg{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:16px 24px;border-bottom:1px solid var(--soft);align-items:start}
+.rg:last-child{border-bottom:0}
+.rg .v{font-weight:700;font-variant-numeric:tabular-nums;font-size:15px}
+.rg .d b{display:block;font-size:14.5px;font-weight:600}
+.rg .d span{display:block;font-size:13.5px;color:var(--muted);margin-top:2px;line-height:1.5}
+.cmp-wrap{margin-top:48px;border:1px solid rgba(0,0,0,.08);border-radius:var(--r-card);overflow-x:auto;background:#fff}
+.ctable{width:100%;border-collapse:collapse;min-width:820px;font-size:14px}
+.ctable th,.ctable td{padding:16px 18px;text-align:left;border-bottom:1px solid var(--soft);vertical-align:top}
+.ctable thead th{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted-2);background:var(--soft-2)}
+.ctable thead th.us{background:var(--ink);color:#fff}
+.ctable td.us{background:var(--signal-tint);font-weight:600;color:var(--fg)}
+.ctable tbody th{font-weight:600;color:var(--fg);width:22%}
+.ctable td{color:var(--muted)}
+.ctable tr:last-child td,.ctable tr:last-child th{border-bottom:0}
+.y{color:var(--green);font-weight:600}
+.term{background:var(--ink-3);border:1px solid rgba(255,255,255,.1);border-radius:16px;font-family:var(--mono);font-size:13px;line-height:1.85;color:rgba(255,255,255,.75);overflow:hidden}
+.term .bar-t{display:flex;gap:6px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+.term .bar-t i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.15)}
+.term pre{padding:18px 20px;white-space:pre-wrap;font:inherit}
+.term .c{color:rgba(255,255,255,.4)}
+.term .g{color:var(--green-hi)}
+.term .o{color:var(--signal-hi)}
+.mlist{margin-top:28px;display:grid;gap:14px}
+.mlist>div{display:flex;gap:14px}
+.mlist .n{font-family:var(--mono);font-size:12px;color:var(--signal-hi);padding-top:3px;flex-shrink:0}
+.mlist b{display:block;font-size:15px;font-weight:600}
+.mlist span{display:block;font-size:14px;color:rgba(255,255,255,.6);line-height:1.55;margin-top:2px}
+.faq{max-width:860px;margin:48px auto 0}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:20px;padding:22px 0;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:22px;font-weight:400;color:var(--muted-2);line-height:1;transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{font-size:15.5px;color:var(--muted);line-height:1.7;padding:0 40px 22px 0}
+.cta{background:var(--ink);color:#fff;padding:120px 0 96px;overflow:hidden}
+.cta .big{font-size:clamp(56px,11vw,156px);font-weight:800;letter-spacing:-.05em;line-height:.9;text-transform:uppercase}
+.cta .big span{display:block;color:#c53a15;background:linear-gradient(180deg,#e2512a,#9e2c0e);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.term-line{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:32px;font-family:var(--mono);font-size:14px;color:rgba(255,255,255,.6)}
+.term-line .live{width:9px;height:9px;border-radius:50%;background:var(--green-hi);box-shadow:0 0 0 4px rgba(60,207,126,.15);animation:pulse 2s infinite}
+.term-line b{color:#fff;font-weight:500}
+@keyframes pulse{50%{box-shadow:0 0 0 7px rgba(60,207,126,.05)}}
+.cta .acts{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+footer{background:var(--ink);color:#fff;border-top:1px solid rgba(255,255,255,.08);padding:64px 0 32px}
+.fcols{display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+.fcols h4{font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.5);display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.fcols h4::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--signal)}
+.fcols a{display:block;font-size:14px;color:rgba(255,255,255,.62);padding:5px 0}
+.fcols a:hover{color:#fff}
+.fbot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:56px;padding-top:28px;border-top:1px solid rgba(255,255,255,.08);font-size:13px;color:rgba(255,255,255,.45)}
+.fbot p{max-width:420px;line-height:1.55;margin-top:12px}
+.fbot .tags{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
+.fbot .tags span{border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:4px 10px;font-size:12px;color:rgba(255,255,255,.6)}
+
+/* ---------- responsive ---------- */
+@media (max-width:1100px){
+  .checker .grid{grid-template-columns:minmax(0,1fr)}
+  .panel{position:static}
+  .steps{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:900px){
+  .nav,.hdr .btn{display:none}
+  .menu-btn{display:grid}
+  .hdr.open .nav{display:flex;flex-direction:column;align-items:stretch;position:absolute;top:64px;left:0;right:0;background:var(--ink);padding:12px 16px 20px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .hdr.open .dd-menu{position:static;width:auto;margin-top:6px}
+  .split{grid-template-columns:1fr;gap:40px}
+  .qgrid{grid-template-columns:1fr}
+  .fcols{grid-template-columns:repeat(2,1fr)}
+  .kw-grid{grid-template-columns:1fr 1fr}
+  .kw-grid .fld:nth-child(3){grid-column:1/-1}
+}
+@media (max-width:640px){
+  .wrap{padding:0 16px}
+  .hero{padding:112px 0 128px}
+  .facts{grid-template-columns:1fr 1fr}
+  .facts div:nth-child(3){border-left:0}
+  .facts div:nth-child(n+3){border-top:1px solid rgba(255,255,255,.1)}
+  .card{padding:18px;border-radius:18px}
+  .kw-grid{grid-template-columns:1fr}
+  .set-grid{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .tiles{grid-template-columns:1fr 1fr}
+  .tile.big{grid-column:span 2;flex-direction:column;align-items:stretch;gap:10px}
+  .tiles.three{grid-template-columns:repeat(3,1fr);gap:8px}
+  .tiles.three .tile{padding:12px}
+  .tiles.three .v{font-size:18px}
+  .search input{width:100%}
+  .search{flex:1}
+  .bar{display:none}
+  .sec{padding:72px 0}
+  .snippet dl{grid-template-columns:1fr;gap:2px}
+  .snippet dd{margin-bottom:8px}
+  .mchip.show{display:flex;position:fixed;left:16px;right:16px;bottom:16px;z-index:60;background:var(--ink);color:#fff;border-radius:999px;padding:10px 12px 10px 18px;align-items:center;justify-content:space-between;gap:10px;box-shadow:var(--shadow-card);font-size:14px}
+  .mchip b{font-variant-numeric:tabular-nums}
+  .faq details p{padding-right:0}
+  .use{opacity:1}
+}
+@media print{
+  .hdr,.hero,.sec,.cta,footer,.toast,.mchip,.toolbar,details.settings,.p-act,.rtabs,.tbl-tools,.use{display:none!important}
+  .checker{padding:0;background:#fff}
+  .checker .grid{margin:0;grid-template-columns:1fr}
+  .panel{position:static;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pane{display:block!important;break-inside:avoid;margin-top:16px}
+  .card{box-shadow:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hdr" id="hdr">
+  <div class="wrap">
+    <a href="#top" class="logo" aria-label="Keyword Density Checker home">
+      <svg viewBox="0 0 32 24" aria-hidden="true"><rect x="1" y="13" width="5.5" height="10" rx="1.6" fill="#fff"/><rect x="9.5" y="7.5" width="5.5" height="15.5" rx="1.6" fill="#fff"/><rect x="18" y="2" width="5.5" height="21" rx="1.6" fill="#ff6b42"/><circle cx="28.5" cy="5" r="2.6" fill="#fff"/></svg>
+      Keyword Density Checker
+    </a>
+    <nav class="nav" id="nav" aria-label="Main">
+      <a href="#checker">Checker</a>
+      <div class="dd" id="dd">
+        <button type="button" aria-expanded="false" aria-haspopup="true">Tools <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div class="dd-menu" role="menu">
+          <a href="#checker" data-goto="keywords" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg></span><span><b>Phrase density</b><span>1, 2, 3 and 4-word phrases with counts</span></span></a>
+          <a href="#checker" data-goto="placement" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg></span><span><b>Keyword placement audit</b><span>Title, meta, H1, slug, alt text and more</span></span></a>
+          <a href="#checker" data-goto="distribution" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16v-3"/><path d="M11 16V8"/><path d="M15 16v-5"/><path d="M19 16V6"/></svg></span><span><b>Distribution map</b><span>Where your keyword clusters, by section</span></span></a>
+          <a href="#checker" data-goto="readability" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></svg></span><span><b>Word counter &amp; readability</b><span>Words, sentences, reading time, Flesch score</span></span></a>
+          <a href="#checker" data-goto="compare" role="menuitem"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></span><span><b>Competitor compare</b><span>Your density next to a ranking page's</span></span></a>
+        </div>
+      </div>
+      <a href="#how">How it works</a>
+      <a href="#ideal">Ideal density</a>
+      <a href="#method">Method</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a href="#checker" class="btn btn-signal btn-sm">Check your text <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open main menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="wrap">
+    <span class="pill"><i></i>Free tool · No sign-up · No word limit</span>
+    <h1>Keyword Density Checker <em>that tells you exactly what to fix</em></h1>
+    <p class="lead">Paste a draft or a URL. See every 1–4 word phrase, check your target keyword against a goal range, and get the exact number of uses to add or cut. It all runs in your browser.</p>
+    <div class="facts">
+      <div><b>1–4 words</b><span>phrase lengths analysed</span></div>
+      <div><b>9 checks</b><span>title, H1, meta, slug and more</span></div>
+      <div><b>0 uploads</b><span>pasted text stays in your tab</span></div>
+      <div><b>No cap</b><span>on words or checks per day</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="checker" id="checker" aria-label="Keyword density checker">
+  <div class="wrap">
+    <div class="grid">
+      <div class="card">
+        <!-- 1. content -->
+        <div class="blk">
+          <div class="toolbar">
+            <div class="step" style="margin:0">1. Your content</div>
+            <div class="tb-actions">
+              <label class="chip-btn" title="Upload .txt, .md or .html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 21h14"/></svg>Upload<input type="file" id="file" accept=".txt,.md,.markdown,.html,.htm,text/plain,text/html" hidden></label>
+              <button class="chip-btn" id="sampleBtn" type="button">Try a sample</button>
+              <button class="chip-btn" id="clearBtn" type="button">Clear</button>
+            </div>
+          </div>
+          <div class="seg" role="tablist" aria-label="Input type" style="margin-bottom:12px">
+            <button class="on" data-mode="text" role="tab" aria-selected="true">Paste text or HTML</button>
+            <button data-mode="url" role="tab" aria-selected="false">Fetch a URL</button>
+          </div>
+          <div id="modeText">
+            <label for="txt" class="sr">Text to analyse</label>
+            <textarea id="txt" placeholder="Paste your article, page copy or full page HTML here. Markdown headings (# H1, ## H2) are picked up for the placement and section checks."></textarea>
+          </div>
+          <div id="modeUrl" hidden>
+            <form class="url-row" id="urlForm">
+              <label for="url" class="sr">Page URL</label>
+              <input class="inp" id="url" type="text" inputmode="url" placeholder="https://example.com/your-article" autocomplete="off">
+              <button class="btn-dark" id="fetchBtn" type="submit">Analyse URL</button>
+            </form>
+            <div class="fetched" id="fetched"></div>
+          </div>
+          <div class="note" id="srcNote">Text is analysed as you type and saved only in this browser.</div>
+        </div>
+
+        <!-- 2. keywords -->
+        <div class="blk">
+          <div class="step">2. Target keywords <small>optional, but this is where the goal check comes from</small></div>
+          <div class="kw-grid">
+            <div class="fld"><label for="kw1">Primary keyword</label><input class="inp" id="kw1" placeholder="e.g. cold brew" autocomplete="off"></div>
+            <div class="fld"><label for="kw2">Secondary keywords <span style="color:var(--faint)">(comma separated)</span></label><input class="inp" id="kw2" placeholder="e.g. cold brew concentrate, coffee ratio" autocomplete="off"></div>
+            <div class="fld"><label for="rMin">Ideal range</label><div class="range-in"><input class="inp" id="rMin" type="number" step="0.1" min="0" value="0.5" aria-label="Minimum density %">–<input class="inp" id="rMax" type="number" step="0.1" min="0" value="2.5" aria-label="Maximum density %">%</div></div>
+          </div>
+          <details class="settings" id="settings">
+            <summary>Analysis settings <span id="setSum">Stop words off · English</span></summary>
+            <div class="set-grid">
+              <label class="opt"><span>Filter stop words<small>Skip "the", "and", "of" in 1-word lists</small></span><span class="switch"><input type="checkbox" id="oStop" checked><span></span></span></label>
+              <label class="opt"><span>Stop-word language</span><select id="oLang"><option value="en">English</option><option value="es">Spanish</option><option value="fr">French</option><option value="de">German</option></select></label>
+              <label class="opt"><span>Count plurals as matches<small>"brew" also matches "brews"</small></span><span class="switch"><input type="checkbox" id="oVar"><span></span></span></label>
+              <label class="opt"><span>Ignore numbers</span><span class="switch"><input type="checkbox" id="oNum" checked><span></span></span></label>
+              <label class="opt"><span>Case sensitive<small>"Apple" and "apple" counted apart</small></span><span class="switch"><input type="checkbox" id="oCase"><span></span></span></label>
+              <label class="opt"><span>Main content only<small>For HTML: skip nav, header, footer</small></span><span class="switch"><input type="checkbox" id="oMain" checked><span></span></span></label>
+              <label class="opt"><span>Minimum word length</span><input type="number" id="oMin" min="1" max="10" value="2"></label>
+              <label class="opt"><span>Phrase density formula</span><select id="oForm"><option value="occ">Uses ÷ total words</option><option value="share">Word share (phrase words ÷ total)</option></select></label>
+              <label class="set-full" style="font-size:13.5px;color:var(--text)">Always ignore these words<input class="inp" id="oIgnore" placeholder="e.g. brand name, click, here" autocomplete="off"></label>
+            </div>
+          </details>
+        </div>
+
+        <!-- 3. results -->
+        <div class="blk">
+          <div class="step">3. Results</div>
+          <div class="rtabs" role="tablist" aria-label="Result views">
+            <button class="on" data-tab="keywords" role="tab">Keywords</button>
+            <button data-tab="placement" role="tab">Placement</button>
+            <button data-tab="distribution" role="tab">Distribution</button>
+            <button data-tab="highlight" role="tab">Highlight</button>
+            <button data-tab="readability" role="tab">Readability</button>
+            <button data-tab="compare" role="tab">Compare</button>
+          </div>
+
+          <div class="pane on" id="p-keywords">
+            <div class="tbl-tools">
+              <div class="seg" id="nSeg">
+                <button class="on" data-n="1">1 word<span class="ct" id="c1"></span></button>
+                <button data-n="2">2 words<span class="ct" id="c2"></span></button>
+                <button data-n="3">3 words<span class="ct" id="c3"></span></button>
+                <button data-n="4">4 words<span class="ct" id="c4"></span></button>
+              </div>
+              <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input class="inp" id="filter" placeholder="Filter keywords" aria-label="Filter keywords"></div>
+            </div>
+            <div id="tblBox"></div>
+          </div>
+          <div class="pane" id="p-placement"></div>
+          <div class="pane" id="p-distribution"></div>
+          <div class="pane" id="p-highlight"></div>
+          <div class="pane" id="p-readability"></div>
+          <div class="pane" id="p-compare">
+            <div class="cmp-in">
+              <div class="note" style="margin:0 0 2px">Paste the text of a page that ranks for your keyword, or fetch its URL. Same settings, side by side.</div>
+              <form class="url-row" id="cmpForm"><input class="inp" id="cmpUrl" placeholder="https://competitor.com/ranking-page" aria-label="Competitor URL"><button class="btn-dark" id="cmpBtn" type="submit">Fetch</button></form>
+              <textarea id="cmpTxt" placeholder="…or paste the competitor's text or HTML here"></textarea>
+              <div class="note" id="cmpNote" style="margin:0"></div>
+            </div>
+            <div id="cmpOut"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- dark results panel -->
+      <aside class="panel" id="panel" aria-live="polite"></aside>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="features">
+  <div class="wrap">
+    <span class="eb">What it checks</span>
+    <h2 class="h2">The questions writers ask before they hit publish</h2>
+    <p class="sub">Most checkers stop at a list of percentages. This one answers the question behind the list.</p>
+    <div class="qgrid">
+      <article class="qcard"><div class="top"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 14l4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/></svg></span><h3>"Is my keyword in a safe range?"</h3></div><div class="how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>How we check it</div><p>Set a goal range and the meter shows where your primary keyword sits. You also get a plain sentence: add 3 uses, cut 2, or leave it alone.</p></article>
+      <article class="qcard"><div class="top"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><h3>"Will this read as keyword stuffing?"</h3></div><div class="how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>How we check it</div><p>Any word or phrase that runs hot gets flagged, including the ones you didn't target. Stuffing is usually an accident, a phrase repeated in every subheading.</p></article>
+      <article class="qcard"><div class="top"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/></svg></span><h3>"Is it in the places that matter?"</h3></div><div class="how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>How we check it</div><p>Nine placement checks for every target keyword: title tag, meta description, URL slug, H1, subheadings, first 100 words, last 100 words, image alt text and spread.</p></article>
+      <article class="qcard"><div class="top"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 16v-3"/><path d="M11 16V8"/><path d="M15 16v-5"/><path d="M19 16V6"/></svg></span><h3>"Did I front-load it and then forget it?"</h3></div><div class="how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>How we check it</div><p>The distribution map shows where the keyword appears from start to end, the longest stretch without it, and density for each H2 section.</p></article>
+      <article class="qcard"><div class="top"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg></span><h3>"How does the page that ranks do it?"</h3></div><div class="how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>How we check it</div><p>Drop in a ranking page and compare densities term by term. Terms it uses and you never mention are marked as gaps, a quick way to find missing subtopics.</p></article>
+      <article class="qcard"><div class="top"><span class="qicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2z"/><path d="M22 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></svg></span><h3>"Is it actually readable?"</h3></div><div class="how"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>How we check it</div><p>Word, sentence and paragraph counts, reading and speaking time, a Flesch reading-ease score and the share of sentences over 25 words.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="sec soft" id="how">
+  <div class="wrap">
+    <span class="eb">How it works</span>
+    <h2 class="h2">From draft to fixed in four steps</h2>
+    <div class="steps">
+      <div class="stp"><span class="n">01 / 04</span><h3>Paste or fetch</h3><p>Paste plain text, Markdown or full HTML, upload a file, or fetch a live URL. HTML is cleaned down to its visible text.</p></div>
+      <div class="stp"><span class="n">02 / 04</span><h3>Set your targets</h3><p>Add a primary keyword and any secondary keywords, then set your ideal range. 0.5–2.5% is the default.</p></div>
+      <div class="stp"><span class="n">03 / 04</span><h3>Read the verdict</h3><p>The panel shows density, status and the one fix that matters most. Tabs go deeper: phrases, placement, distribution.</p></div>
+      <div class="stp"><span class="n">04 / 04</span><h3>Edit and re-check</h3><p>Numbers update as you type. Export a CSV, copy a report for your editor, or share a link with your settings.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="ideal">
+  <div class="wrap split">
+    <div class="prose">
+      <span class="eb">Keyword density, explained</span>
+      <h2 class="h2">What is keyword density, and what's a good number?</h2>
+      <p><b>Keyword density</b> is how often a word or phrase appears in a text, as a share of the total word count. Use "cold brew" 10 times in a 1,000-word article and its density is 1%.</p>
+      <p>Google has never published an ideal percentage, and density isn't a ranking factor on its own. It's still a useful check for two real problems. One is a page that never clearly names its topic. The other is a page that repeats a phrase so often it reads as <b>keyword stuffing</b>, which Google's spam policies call out.</p>
+      <div class="formula">
+        <div class="fcard"><span class="t">Standard formula</span><code>density = (uses ÷ total words) × 100</code><small>The default here and in most checkers. 10 uses in 1,000 words = 1.0%.</small></div>
+        <div class="fcard"><span class="t">Word-share formula</span><code>density = (uses × words in phrase ÷ total words) × 100</code><small>Counts a 2-word phrase twice. 10 uses of "cold brew" in 1,000 words = 2.0%. Switch to it in settings.</small></div>
+      </div>
+    </div>
+    <div class="ranges">
+      <div class="hd"><b>Working ranges for a primary keyword</b><span>Guardrails used by SEO editors, not rules from Google</span></div>
+      <div class="rg"><span class="v">0%</span><div class="d"><b>Missing</b><span>The page never names its main topic. Add it to the title, H1 and opening paragraph first.</span></div></div>
+      <div class="rg"><span class="v">&lt; 0.5%</span><div class="d"><b>Light</b><span>Fine for long guides that use variants. Check that the key placements are covered.</span></div></div>
+      <div class="rg"><span class="v" style="color:var(--green)">0.5–2.5%</span><div class="d"><b>Natural range</b><span>Where most well-written pages land. Long-tail phrases usually sit at 0.5–1.5%.</span></div></div>
+      <div class="rg"><span class="v" style="color:var(--signal)">2.5–3%</span><div class="d"><b>Running hot</b><span>Read it aloud. Swap some repeats for pronouns, synonyms or more specific terms.</span></div></div>
+      <div class="rg"><span class="v" style="color:#c52a30">&gt; 3%</span><div class="d"><b>Stuffing risk</b><span>Likely to read as repetitive to people and to spam filters. Cut repeats or add substance.</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec soft" id="compare-tools">
+  <div class="wrap">
+    <span class="eb">Criterion</span>
+    <h2 class="h2">Four ways to check keyword density</h2>
+    <p class="sub">Each has a place. Here's what you get from each.</p>
+    <div class="cmp-wrap">
+      <table class="ctable">
+        <thead><tr><th>Criterion</th><th class="us">This checker</th><th>Typical free web checker</th><th>CMS SEO plugin</th><th>Find in page (Ctrl+F)</th></tr></thead>
+        <tbody>
+          <tr><th>Limits</th><td class="us">No word cap, no daily cap, no account</td><td>Word caps, daily check limits or sign-up walls are common</td><td>Tied to your CMS install</td><td>None</td></tr>
+          <tr><th>Phrase lengths</th><td class="us">1, 2, 3 and 4 words</td><td>Usually 1–3 words</td><td>Focus keyword only</td><td>One phrase at a time</td></tr>
+          <tr><th>Goal check</th><td class="us">Range meter + exact uses to add or cut</td><td>Percentages only</td><td>Pass / fail light</td><td>A raw count</td></tr>
+          <tr><th>Placement checks</th><td class="us">9 checks per keyword, incl. slug and alt text</td><td>Some check title, meta and headings</td><td>Title, meta, intro for the focus keyword</td><td>No</td></tr>
+          <tr><th>Distribution</th><td class="us">Heatmap, longest gap, density per section</td><td>Rare</td><td>No</td><td>No</td></tr>
+          <tr><th>Competitor compare</th><td class="us">Side by side, with gap terms</td><td>Rare, often paid</td><td>No</td><td>No</td></tr>
+          <tr><th>Where text goes</th><td class="us">Stays in your browser tab</td><td>Sent to their server</td><td>Your CMS</td><td>Stays in your browser</td></tr>
+          <tr><th>Export</th><td class="us">CSV, copy report, share link, PDF</td><td>Sometimes</td><td>No</td><td>No</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="sec dark" id="method">
+  <div class="wrap split">
+    <div>
+      <span class="eb">Open method</span>
+      <h2 class="h2">How we count, so you can trust the number</h2>
+      <p class="sub">Different checkers disagree because they count differently. Here are our rules, written down.</p>
+      <div class="mlist">
+        <div><span class="n">01</span><div><b>Words</b><span>A word is a run of letters or digits. Apostrophes and hyphens inside a word keep it whole, so "don't" and "e-commerce" count once. Every word, stop words included, counts toward the total.</span></div></div>
+        <div><span class="n">02</span><div><b>Phrases</b><span>2–4 word phrases never cross sentence ends, commas, colons or line breaks. With stop-word filtering on, phrases can't start or end with a stop word, so "cost of coffee" counts but "of the" doesn't.</span></div></div>
+        <div><span class="n">03</span><div><b>Target keywords</b><span>Matched as exact word sequences, ignoring case. Turn on plurals to count simple variants. HTML is reduced to visible text: scripts, styles and, optionally, the nav and footer are dropped.</span></div></div>
+        <div><span class="n">04</span><div><b>Privacy</b><span>Everything runs in your browser. Pasted text and files are never uploaded. A URL fetch goes through a public page reader so the browser can read the page.</span></div></div>
+      </div>
+    </div>
+    <div class="term" aria-label="Example analysis output">
+      <div class="bar-t"><i></i><i></i><i></i></div>
+<pre><span class="c">$</span> kdc analyse draft.md --keyword "cold brew"
+<span class="c">words .........</span> 1,284  <span class="c">(unique 512)</span>
+<span class="c">phrases .......</span> split at  . , ; : ! ?  and line breaks
+<span class="c">stop words ....</span> filtered from 1-word list
+<span class="c">formula .......</span> uses ÷ total words × 100
+
+<span class="c">cold brew .....</span> 18 uses → <span class="g">1.40%</span>
+<span class="c">placement .....</span> 8 / 9  <span class="c">(missing: image alt)</span>
+<span class="c">longest gap ...</span> 212 words  <span class="c">(section 3)</span>
+<span class="c">watch .........</span> <span class="o">"coffee" 3.4%</span>
+
+status: <span class="g">IN_RANGE</span></pre>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="faq">
+  <div class="wrap">
+    <div class="center"><span class="eb">Questions &amp; answers</span><h2 class="h2">Frequently asked questions</h2></div>
+    <div class="faq">
+      <details><summary>What is keyword density?</summary><p>Keyword density is how often a word or phrase appears in a text, shown as a percentage of the total word count. A keyword used 10 times in a 1,000-word article has a density of 1%.</p></details>
+      <details><summary>How is keyword density calculated?</summary><p>The standard formula is (uses ÷ total words) × 100. Some tools use a word-share formula, where a multi-word phrase counts once per word it contains, so a 2-word phrase scores double. Pick either under Analysis settings. The panel always shows which one is in use.</p></details>
+      <details><summary>What is a good keyword density for SEO?</summary><p>Google publishes no ideal number. Most SEO writers keep a primary keyword between about 0.5% and 2.5% and treat anything above 3% as a warning sign. Long-tail phrases naturally sit lower. Treat the range as a guardrail, not a target to hit to two decimal places.</p></details>
+      <details><summary>Does keyword density still matter in 2026?</summary><p>Not as a ranking factor on its own. Search engines understand topics, synonyms and context. Density still catches two real problems quickly: a page that never clearly names what it's about, and a page that repeats a phrase until it reads as spam.</p></details>
+      <details><summary>What is keyword stuffing, and how do I fix it?</summary><p>Keyword stuffing means repeating a word or phrase unnaturally to try to rank, and Google's spam policies name it. To fix it, swap repeats for pronouns, synonyms or more specific terms. Cut the phrase from subheadings where it adds nothing, or add useful content so the same uses spread over more words.</p></details>
+      <details><summary>How many times should I use my keyword?</summary><p>Enter your keyword and the panel works it out from your word count and range. A rough rule is one use per 100–200 words, plus the title, H1, opening paragraph and URL slug.</p></details>
+      <details><summary>Should stop words be counted?</summary><p>They always count toward the total word count, so your percentages are honest. With filtering on, they're hidden from the 1-word list and phrases can't start or end with one. You see "cold brew coffee", not "the cold".</p></details>
+      <details><summary>What's the difference between 1, 2, 3 and 4-word analysis?</summary><p>One-word lists show which single terms dominate. Two- to four-word lists show the phrases you actually rank for, like "cold brew concentrate" or "how to make cold brew". Over-use usually shows up in the 2–3 word lists first.</p></details>
+      <details><summary>Is my text stored or uploaded?</summary><p>No. Pasted text and uploaded files are analysed by JavaScript inside your browser tab and never sent to a server. Your last draft is saved in your own browser's local storage so a refresh doesn't lose it. Clear removes it. Only the URL option requests a page, the one you name.</p></details>
+      <details><summary>Can I check a live URL or a competitor's page?</summary><p>Yes. Use "Fetch a URL" for any public page. Use the Compare tab to put a ranking page next to your draft. Some sites block automated readers. If a fetch fails, open the page, copy its text or HTML, and paste it instead.</p></details>
+      <details><summary>Why do my numbers differ from another checker?</summary><p>Checkers differ in three ways: whether stop words count toward the total, which formula they use, and whether phrases may cross punctuation. Our rules are listed under "Open method". Switch the formula to word share if you're matching a tool that uses it.</p></details>
+      <details><summary>Is there a word limit or a daily limit?</summary><p>No. No word cap, no daily check limit, no account. Very long texts are limited only by your device's memory.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <span class="eb">Start your check</span>
+    <div class="big" style="margin-top:22px">Paste it.<span>Then polish it.</span></div>
+    <div class="term-line"><i class="live"></i><span>status: <b>ANALYSING_LOCALLY</b></span><span>·</span><span>your text never leaves this tab</span></div>
+    <div class="acts">
+      <a href="#checker" class="btn btn-signal">Check your text <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+      <a href="#method" class="btn btn-ghost-dark">Read the method</a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fcols">
+      <div><h4>Tools</h4><a href="#checker" data-goto="keywords">Keyword density checker</a><a href="#checker" data-goto="placement">Keyword placement audit</a><a href="#checker" data-goto="distribution">Keyword distribution map</a><a href="#checker" data-goto="readability">Word counter</a><a href="#checker" data-goto="compare">Competitor density compare</a></div>
+      <div><h4>Guides</h4><a href="#ideal">What is keyword density?</a><a href="#ideal">Ideal keyword density</a><a href="#faq">Keyword stuffing, explained</a><a href="#compare-tools">Ways to check density</a></div>
+      <div><h4>Company</h4><a href="#method">Our method</a><a href="#how">How it works</a><a href="mailto:hello@keyworddensitychecker.com">Contact</a></div>
+      <div><h4>Legal</h4><a href="#method">Privacy</a><a href="#faq">Terms of use</a></div>
+    </div>
+    <div class="fbot">
+      <div>
+        <a href="#top" class="logo"><svg viewBox="0 0 32 24" aria-hidden="true"><rect x="1" y="13" width="5.5" height="10" rx="1.6" fill="#fff"/><rect x="9.5" y="7.5" width="5.5" height="15.5" rx="1.6" fill="#fff"/><rect x="18" y="2" width="5.5" height="21" rx="1.6" fill="#ff6b42"/><circle cx="28.5" cy="5" r="2.6" fill="#fff"/></svg>Keyword Density Checker</a>
+        <p>A free keyword density checker for SEO writers and editors. Phrase density, goal checks, placement audits and competitor comparison, all in your browser.</p>
+      </div>
+      <div class="tags"><span>No sign-up</span><span>No word limit</span><span>Runs in your browser</span></div>
+    </div>
+    <div class="fbot" style="margin-top:24px;padding-top:20px"><span>© 2026 Keyword Density Checker. All rights reserved.</span><span>Made for people who write for search.</span></div>
+  </div>
+</footer>
+
+<div class="mchip" id="mchip"><span id="mchipTxt"></span><a href="#panel" class="btn btn-signal btn-sm" style="height:34px">Details</a></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+'use strict';
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt = n => n.toLocaleString('en-US');
+const pct = (n, d = 2) => (isFinite(n) ? n : 0).toFixed(d) + '%';
+const I = {
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6 9 17l-5-5"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg>',
+  copy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
+  dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>',
+  print:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'
+};
+
+/* ---------- stop words ---------- */
+const STOP = {
+  en: "a about above after again against all almost also am an and any are aren't as at be because been before being below between both but by can can't cannot could couldn't did didn't do does doesn't doing don't down during each either else etc even ever every few for from further get gets got had hadn't has hasn't have haven't having he he'd he'll he's her here here's hers herself him himself his how how's however i i'd i'll i'm i've if in into is isn't it it's its itself just let's like may me might more most much must mustn't my myself near neither no nor not now of off often on once only or other ought our ours ourselves out over own per quite rather really same shall she she'd she'll she's should shouldn't since so some such than that that's the their theirs them themselves then there there's these they they'd they'll they're they've this those though through thus to too under until up upon us very via was wasn't we we'd we'll we're we've were weren't what what's when when's where where's whether which while who who's whom whose why why's will with within without won't would wouldn't yet you you'd you'll you're you've your yours yourself yourselves",
+  es: "a al algo algunas algunos ante antes como con contra cual cuando de del desde donde durante e el ella ellas ellos en entre era es esa esas ese eso esos esta estas este esto estos fue ha han hasta hay la las le les lo los mas más me mi mis mucho muchos muy nada ni no nos nosotros o os otra otras otro otros para pero poco por porque que qué quien quienes se ser si sí sin sobre son su sus también tanto te ti todo todos tu tus tú un una uno unos y ya yo",
+  fr: "a à au aussi aux avec avoir car ce ces cet cette comme dans de des donc dont du elle elles en est et été être fait il ils je la le les leur leurs lui ma mais me mes moi mon même ne ni nos notre nous on ont ou où par pas plus pour qu que qui quoi sa sans se ses si son sont sous sur ta te tes toi ton tous tout toute toutes très tu un une vos votre vous y",
+  de: "aber als am an auch auf aus bei bin bis da dann das dass dein dem den der des dich die dir doch du durch ein eine einem einen einer eines er es euch euer für hat haben ich ihm ihn ihnen ihr im in ist ja kein keine man mein mich mir mit nach nein nicht noch nur oder schon sehr sein sich sie sind so über um und uns unser unter vom von vor war waren was wenn werden wie wir wird zu zum zur"
+};
+for (const k in STOP) STOP[k] = new Set(STOP[k].split(' '));
+
+/* ---------- tokenizer ---------- */
+const RX = /[\p{L}\p{M}\p{N}]+(?:['’\-][\p{L}\p{M}\p{N}]+)*(?:[.,]\p{N}+)*/gu;
+const NUM = /^[\p{N}.,]+$/u;
+function tokenize(text, keepCase) {
+  const toks = []; let prev = 0, sent = 0, phr = 0, m;
+  RX.lastIndex = 0;
+  while ((m = RX.exec(text))) {
+    if (toks.length) {
+      const gap = text.slice(prev, m.index);
+      if (/[.!?…]|\n/.test(gap)) { sent++; phr++; }
+      else if (/[,;:()[\]{}|•·—–"“”]|\s-\s/.test(gap)) phr++;
+    }
+    let w = m[0].replace(/’/g, "'");
+    if (!keepCase) w = w.toLowerCase();
+    toks.push({ w, s: m.index, e: m.index + m[0].length, sent, phr });
+    prev = m.index + m[0].length;
+  }
+  return toks;
+}
+const stem = w => {
+  if (w.endsWith("'s")) return w.slice(0, -2);
+  if (w.length > 4 && w.endsWith('ies')) return w.slice(0, -3) + 'y';
+  if (w.length > 3 && w.endsWith('s') && !w.endsWith('ss')) return w.slice(0, -1);
+  return w;
+};
+
+/* ---------- settings ---------- */
+function cfg() {
+  const keepCase = $('#oCase').checked;
+  const ign = $('#oIgnore').value.split(',').map(s => s.trim()).filter(Boolean);
+  return {
+    stop: $('#oStop').checked, lang: $('#oLang').value, variants: $('#oVar').checked,
+    nums: $('#oNum').checked, keepCase, mainOnly: $('#oMain').checked,
+    minLen: Math.max(1, +$('#oMin').value || 1), formula: $('#oForm').value,
+    ignore: new Set(ign.map(w => keepCase ? w : w.toLowerCase())),
+    min: Math.max(0, parseFloat($('#rMin').value) || 0), max: Math.max(0.1, parseFloat($('#rMax').value) || 2.5)
+  };
+}
+
+/* ---------- document building ---------- */
+const looksHTML = t => /<\s*(html|head|body|p|div|h[1-6]|article|section|span|a|ul|li|title|meta)[\s>/]/i.test(t);
+function docFromText(t) {
+  const headings = {1:[],2:[],3:[],4:[],5:[],6:[]}; const heads = [];
+  const re = /^[ \t]*(#{1,6})[ \t]+(.+)$/gm; let m;
+  while ((m = re.exec(t))) { headings[m[1].length].push(m[2].trim()); heads.push({ level: m[1].length, text: m[2].trim(), at: m.index }); }
+  let headline = false;
+  if (!headings[1].length) {
+    const lines = t.split('\n'); const first = (lines.find(l => l.trim()) || '').trim();
+    if (first && first.split(/\s+/).length <= 14 && !/[.!?:,]$/.test(first) && lines.filter(l => l.trim()).length > 1) {
+      headings[1].push(first); headline = true; heads.unshift({ level: 1, text: first, at: t.indexOf(first) });
+    }
+  }
+  const hasSub = [2,3,4,5,6].some(l => headings[l].length);
+  return { kind: 'text', text: t, title: null, meta: null, slug: null, headings, heads, alts: null, headline, hasSub };
+}
+function docFromHTML(html, url, mainOnly) {
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  const title = (doc.querySelector('title')?.textContent || '').trim();
+  const meta = (doc.querySelector('meta[name="description" i]')?.getAttribute('content') || doc.querySelector('meta[property="og:description" i]')?.getAttribute('content') || '').trim();
+  const canon = doc.querySelector('link[rel="canonical" i]')?.getAttribute('href') || '';
+  let slug = null;
+  try { const u = new URL(url || canon || 'x:', 'https://x.invalid'); if (url || canon) slug = decodeURIComponent(u.pathname); } catch (e) {}
+  const alts = [...doc.querySelectorAll('img[alt]')].map(i => i.getAttribute('alt').trim()).filter(Boolean);
+  const imgCount = doc.querySelectorAll('img').length;
+  doc.querySelectorAll('script,style,noscript,svg,template,iframe,canvas,[hidden],[aria-hidden="true"]').forEach(n => n.remove());
+  let root = doc.body || doc.documentElement;
+  if (mainOnly) {
+    const main = doc.querySelector('main, article, [role="main"]');
+    if (main && main.textContent.trim().split(/\s+/).length > 50) root = main;
+    else root.querySelectorAll('nav, header, footer, aside, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach(n => n.remove());
+  }
+  const headings = {1:[],2:[],3:[],4:[],5:[],6:[]};
+  doc.querySelectorAll('h1,h2,h3,h4,h5,h6').forEach(h => { const t = h.textContent.replace(/\s+/g, ' ').trim(); if (t) headings[+h.tagName[1]].push(t); });
+  const MARK = '\u0001H';
+  root.querySelectorAll('h1,h2,h3,h4,h5,h6').forEach(h => h.insertBefore(doc.createTextNode(MARK + h.tagName[1] + ' '), h.firstChild));
+  root.querySelectorAll('br').forEach(b => b.replaceWith(doc.createTextNode('\n')));
+  root.querySelectorAll('p,div,li,h1,h2,h3,h4,h5,h6,tr,section,article,blockquote,pre,dd,dt,figcaption,td,th,header,footer,main,aside,nav,ul,ol,table,form,label,option').forEach(el => { el.appendChild(doc.createTextNode('\n')); el.insertBefore(doc.createTextNode('\n'), el.firstChild); });
+  let text = (root.textContent || '').replace(/[ \t \r]+/g, ' ').replace(/ *\n */g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+  // pull heading markers out, remembering where each section starts
+  const heads = []; let out = ''; let i = 0;
+  const parts = text.split(MARK);
+  out = parts[0];
+  for (let p = 1; p < parts.length; p++) {
+    const level = +parts[p][0]; const rest = parts[p].slice(2);
+    const htxt = rest.split('\n')[0].trim();
+    heads.push({ level, text: htxt, at: out.length });
+    out += rest;
+  }
+  text = out;
+  const hasSub = [2,3,4,5,6].some(l => headings[l].length);
+  return { kind: 'html', text, title, meta, slug, headings, heads, alts: imgCount ? alts : [], imgCount, headline: false, hasSub };
+}
+
+/* ---------- analysis ---------- */
+function ngrams(toks, n, c, stopSet) {
+  const map = new Map();
+  for (let i = 0; i + n <= toks.length; i++) {
+    if (toks[i].phr !== toks[i + n - 1].phr) continue;
+    let ok = true; const parts = [];
+    for (let j = i; j < i + n; j++) {
+      const w = toks[j].w;
+      if ((c.nums && NUM.test(w)) || c.ignore.has(w)) { ok = false; break; }
+      parts.push(w);
+    }
+    if (!ok) continue;
+    const lw0 = parts[0].toLowerCase(), lwn = parts[n - 1].toLowerCase();
+    if (n === 1) { if (stopSet.has(lw0) || parts[0].length < c.minLen) continue; }
+    else if (stopSet.has(lw0) || stopSet.has(lwn) || parts[0].length < c.minLen || parts[n - 1].length < c.minLen) continue;
+    const key = parts.join(' ');
+    let o = map.get(key); if (!o) { o = { k: key, c: 0, pos: [] }; map.set(key, o); }
+    o.c++; o.pos.push(i);
+  }
+  return map;
+}
+function findSeq(toks, kwt, variants) {
+  const n = kwt.length; if (!n) return [];
+  const norm = variants ? stem : (w => w);
+  const target = kwt.map(norm); const out = [];
+  for (let i = 0; i + n <= toks.length; i++) {
+    if (toks[i].phr !== toks[i + n - 1].phr) continue;
+    let ok = true;
+    for (let j = 0; j < n; j++) if (norm(toks[i + j].w) !== target[j]) { ok = false; break; }
+    if (ok) { out.push(i); i += n - 1; }
+  }
+  return out;
+}
+const contains = (str, kwt, c) => !!str && findSeq(tokenize(str, c.keepCase), kwt, c.variants).length > 0;
+const dens = (count, n, total, formula) => total ? (formula === 'share' ? count * n : count) / total * 100 : 0;
+
+function syl(w) {
+  w = w.toLowerCase().replace(/[^a-z]/g, ''); if (!w) return 0; if (w.length <= 3) return 1;
+  w = w.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '').replace(/^y/, '');
+  const m = w.match(/[aeiouy]{1,2}/g); return m ? m.length : 1;
+}
+
+function analyse(doc, c) {
+  const toks = tokenize(doc.text, c.keepCase);
+  const total = toks.length;
+  const stopSet = c.stop ? STOP[c.lang] : new Set();
+  const grams = {}; for (let n = 1; n <= 4; n++) {
+    let arr = [...ngrams(toks, n, c, stopSet).values()];
+    if (n > 1) arr = arr.filter(o => o.c > 1);
+    grams[n] = arr;
+  }
+  return { doc, c, toks, total, grams, stopSet };
+}
+function keywordsOf(c) {
+  const list = [$('#kw1').value.trim(), ...$('#kw2').value.split(',').map(s => s.trim())].filter(Boolean);
+  const seen = new Set(); const out = [];
+  list.forEach((k, i) => {
+    const t = tokenize(k, c.keepCase).map(x => x.w); const key = t.join(' ');
+    if (!t.length || seen.has(key)) return; seen.add(key);
+    out.push({ k, t, primary: i === 0 && !!$('#kw1').value.trim() });
+  });
+  return out;
+}
+function scoreKw(R, kw) {
+  const pos = findSeq(R.toks, kw.t, R.c.variants);
+  const d = dens(pos.length, kw.t.length, R.total, R.c.formula);
+  return { ...kw, pos, count: pos.length, d, st: status(d, pos.length, R.c) };
+}
+function status(d, count, c) {
+  if (!count) return { id: 'bad', label: 'Missing', dot: '#ff7a7f' };
+  if (d < c.min) return { id: 'lo', label: 'Under-used', dot: '#ffb33e' };
+  if (d <= c.max) return { id: 'ok', label: 'In range', dot: '#3ccf7e' };
+  if (d <= c.max + 0.5) return { id: 'hi', label: 'Running hot', dot: '#ff6b42' };
+  return { id: 'bad', label: 'Stuffing risk', dot: '#ff7a7f' };
+}
+
+/* ---------- state ---------- */
+const state = { mode: 'text', tab: 'keywords', n: 1, sort: { key: 'c', dir: -1 }, filter: '', sel: null, showAll: false, urlDoc: null, urlRaw: '', url: '', cmpRaw: '', cmpUrl: '' };
+let R = null;
+
+function currentDoc(c) {
+  if (state.mode === 'url') return state.urlRaw ? docFromHTML(state.urlRaw, state.url, c.mainOnly) : null;
+  const t = $('#txt').value;
+  if (!t.trim()) return null;
+  return looksHTML(t) ? docFromHTML(t, null, c.mainOnly) : docFromText(t);
+}
+
+function run() {
+  const c = cfg();
+  const doc = currentDoc(c);
+  updateSetSum(c);
+  if (!doc || !doc.text.trim()) { R = null; renderEmpty(); save(); return; }
+  R = analyse(doc, c);
+  R.kws = keywordsOf(c).map(k => scoreKw(R, k));
+  R.gramIndex = {}; for (let n = 1; n <= 4; n++) R.gramIndex[n] = new Map(R.grams[n].map(o => [o.k, o]));
+  if (state.sel && !R.gramIndex[state.sel.split(' ').length]?.has(state.sel)) state.sel = null;
+  const note = $('#srcNote');
+  if (state.mode === 'text') {
+    note.className = 'note';
+    note.textContent = doc.kind === 'html' ? `HTML detected: analysing ${fmt(R.total)} words of visible text${c.mainOnly ? ' (main content only)' : ''}. Title, meta and alt text are checked separately.` : `${fmt(R.total)} words. Analysed as you type and saved only in this browser.`;
+  }
+  renderPanel(); renderCounts(); renderTab(); save();
+}
+let tmr; const runSoon = () => { clearTimeout(tmr); tmr = setTimeout(run, 180); };
+
+/* ---------- render: panel ---------- */
+function renderEmpty() {
+  $('#panel').innerHTML = `<div class="p-top"><span class="eb-d">Keyword density</span></div><div class="p-empty"><b>Paste some text to start</b>Results show up here as you type: your target keyword's density, whether it's in range, and the next fix to make.<br><br>No text yet? Hit <u style="cursor:pointer" id="pSample">Try a sample</u>.</div><div class="privacy">${I.lock}<span>Runs in your browser. Pasted text is never uploaded.</span></div>`;
+  $('#pSample')?.addEventListener('click', loadSample);
+  ['keywords','placement','distribution','highlight','readability'].forEach(t => {
+    const el = t === 'keywords' ? $('#tblBox') : $('#p-' + t);
+    el.innerHTML = '<div class="empty">Add some content in step 1 to see results.</div>';
+  });
+  ['c1','c2','c3','c4'].forEach(id => $('#' + id).textContent = '');
+  updateChip();
+}
+function fixText(kw, R) {
+  const c = R.c, unit = c.formula === 'share' ? kw.t.length : 1, total = R.total;
+  const needMin = Math.max(1, Math.ceil(c.min * total / 100 / unit));
+  const maxAllowed = Math.floor(c.max * total / 100 / unit);
+  const q = `"${esc(kw.k)}"`;
+  if (!kw.count) return `Use ${q} at least ${needMin} time${needMin > 1 ? 's' : ''} to reach ${c.min}%. Start with the title, H1 and first paragraph.`;
+  if (kw.d < c.min) { const add = needMin - kw.count; return `Add ${add} more use${add > 1 ? 's' : ''} of ${q} to reach ${c.min}%.`; }
+  if (kw.d <= c.max) { const room = maxAllowed - kw.count; return room > 0 ? `In range. Room for ${room} more use${room > 1 ? 's' : ''} before ${c.max}%.` : `In range, at the top of it. Don't add more uses of ${q}.`; }
+  const cut = kw.count - maxAllowed; const words = Math.ceil(kw.count * unit * 100 / c.max) - total;
+  return `Cut ${cut} use${cut > 1 ? 's' : ''} of ${q}, or add about ${fmt(words)} words, to get under ${c.max}%.`;
+}
+function placementScore(R, kw) {
+  const res = CHECKS.map(ch => ch.test(R, kw)).filter(v => v !== null);
+  return { pass: res.filter(Boolean).length, of: res.length };
+}
+function renderPanel() {
+  const c = R.c, p = R.kws.find(k => k.primary) || R.kws[0];
+  const scaleMax = Math.max(5, Math.ceil(c.max * 2));
+  const posPct = v => Math.min(100, v / scaleMax * 100);
+  let top = '';
+  if (p) {
+    const ps = placementScore(R, p);
+    top = `<div class="p-top"><span class="eb-d">${p.primary ? 'Primary keyword density' : 'Keyword density'}</span>
+      <div class="p-kw">"${esc(p.k)}"</div>
+      <div class="p-val"><b>${pct(p.d)}</b><span class="status ${p.st.id}"><i></i>${p.st.label}</span></div>
+      <div class="p-sub">${fmt(p.count)} use${p.count === 1 ? '' : 's'} in ${fmt(R.total)} words · placement ${ps.pass}/${ps.of}</div>
+      <div class="gauge" role="img" aria-label="Density ${pct(p.d)} against ideal range ${c.min}% to ${c.max}%"><div class="zone" style="left:${posPct(c.min)}%;width:${posPct(c.max) - posPct(c.min)}%"></div><div class="mark" style="left:${posPct(p.d)}%"></div></div>
+      <div class="g-scale"><span>0%</span><span>${c.min}–${c.max}% ideal</span><span>${scaleMax}%</span></div></div>
+      <div class="fix"><span class="eb-d">Next fix</span><p>${fixText(p, R)}</p></div>`;
+    const others = R.kws.filter(k => k !== p);
+    if (others.length) top += `<ul class="sec-list">${others.map(k => `<li><span><i class="dot" style="background:${k.st.dot}"></i>${esc(k.k)}</span><span>${pct(k.d)} · ${k.count}×</span></li>`).join('')}</ul>`;
+  } else {
+    const t = R.grams[1].slice().sort((a, b) => b.c - a.c)[0];
+    const t2 = R.grams[2].slice().sort((a, b) => b.c - a.c)[0];
+    top = `<div class="p-top"><span class="eb-d">Top keyword</span>
+      ${t ? `<div class="p-kw">"${esc(t.k)}"</div><div class="p-val"><b>${pct(dens(t.c, 1, R.total, c.formula))}</b></div><div class="p-sub">${t.c} uses${t2 ? ` · top phrase "${esc(t2.k)}" ${pct(dens(t2.c, 2, R.total, c.formula))}` : ''}</div>` : '<div class="p-sub">Not enough words yet.</div>'}</div>
+      <div class="fix"><span class="eb-d">Get a goal check</span><p>Add a primary keyword in step 2 to see if it's in range and exactly how many uses to add or cut.</p></div>`;
+  }
+  const sents = R.total ? R.toks[R.toks.length - 1].sent + 1 : 0;
+  const mins = R.total / 238;
+  const hot = R.grams[1].concat(R.grams[2]).filter(o => R.total >= 100 && o.c >= 3 && dens(o.c, o.k.split(' ').length, R.total, c.formula) > Math.max(3, c.max + 0.5)).sort((a, b) => b.c - a.c).slice(0, 3);
+  const warn = hot.length ? `<div class="warn"><b>Watch for over-use:</b> ${hot.map(o => `"${esc(o.k)}" ${pct(dens(o.c, o.k.split(' ').length, R.total, c.formula), 1)}`).join(', ')}</div>` : '';
+  $('#panel').innerHTML = top + `
+    <div class="p-stats">
+      <div><div class="l">Words</div><div class="v">${fmt(R.total)}</div></div>
+      <div><div class="l">Unique words</div><div class="v">${fmt(new Set(R.toks.map(t => t.w.toLowerCase())).size)}</div></div>
+      <div><div class="l">Sentences</div><div class="v">${fmt(sents)}</div></div>
+      <div><div class="l">Reading time</div><div class="v">${mins < 1 ? '< 1 min' : Math.round(mins) + ' min'}</div></div>
+      <div><div class="l">Formula</div><div class="v">${c.formula === 'share' ? 'Word share' : 'Uses ÷ words'}</div></div>
+      <div><div class="l">Stop words</div><div class="v">${c.stop ? 'Filtered' : 'Included'}</div></div>
+    </div>${warn}
+    <div class="p-act">
+      <div class="two"><button class="pbtn" data-act="copy">${I.copy}Copy report</button><button class="pbtn" data-act="csv">${I.dl}Download CSV</button></div>
+      <div class="two"><button class="pbtn" data-act="share">${I.link}Share link</button><button class="pbtn" data-act="print">${I.print}Save PDF</button></div>
+    </div>
+    <div class="privacy">${I.lock}<span>${state.mode === 'url' ? 'The page was fetched through a public reader and analysed in your browser.' : 'Analysed in your browser. Your text was never uploaded.'}</span></div>`;
+  updateChip();
+}
+function updateChip() {
+  const chip = $('#mchip');
+  const p = R && (R.kws.find(k => k.primary) || R.kws[0]);
+  if (!p) { chip.classList.remove('show'); return; }
+  $('#mchipTxt').innerHTML = `<b>${pct(p.d)}</b> · ${esc(p.st.label)}`;
+  chip.dataset.ready = '1'; chipVis();
+}
+let panelVisible = false, checkerVisible = false;
+function chipVis() { const chip = $('#mchip'); chip.classList.toggle('show', chip.dataset.ready === '1' && checkerVisible && !panelVisible && scrollY > $('.hero').offsetHeight && !!R && R.kws.length > 0); }
+addEventListener('scroll', () => chipVis(), { passive: true });
+
+/* ---------- render: tabs ---------- */
+function renderCounts() { for (let n = 1; n <= 4; n++) $('#c' + n).textContent = fmt(R.grams[n].length); }
+function renderTab() {
+  if (!R) return;
+  ({ keywords: renderTable, placement: renderPlacement, distribution: renderDistribution, highlight: renderHighlight, readability: renderReadability, compare: renderCompare })[state.tab]();
+}
+function renderTable() {
+  const n = state.n, c = R.c;
+  let rows = R.grams[n].map(o => ({ ...o, d: dens(o.c, n, R.total, c.formula) }));
+  const f = state.filter.trim().toLowerCase();
+  if (f) rows = rows.filter(o => o.k.toLowerCase().includes(f));
+  const { key, dir } = state.sort;
+  rows.sort((a, b) => key === 'k' ? dir * a.k.localeCompare(b.k) : dir * (a.c - b.c) || a.k.localeCompare(b.k));
+  if (!rows.length) { $('#tblBox').innerHTML = `<div class="empty">${f ? 'No keywords match that filter.' : n > 1 ? `No ${n}-word phrase appears more than once yet.` : 'No keywords found with the current settings.'}</div>`; return; }
+  const maxD = Math.max(...rows.map(o => o.d));
+  const shown = state.showAll ? rows : rows.slice(0, 50);
+  const tgt = new Set(R.kws.map(k => k.t.join(' ')));
+  const isHTML = R.doc.kind === 'html';
+  const hJoin = Object.values(R.doc.headings).flat().join('\n');
+  const arr = k => state.sort.key === k ? `<span class="arr">${state.sort.dir < 0 ? '↓' : '↑'}</span>` : '';
+  const hotAt = Math.max(3, c.max + 0.5);
+  $('#tblBox').innerHTML = `<div style="overflow-x:auto"><table class="tbl"><thead><tr><th>#</th><th data-sort="k">Keyword ${arr('k')}</th><th class="num" data-sort="c">Count ${arr('c')}</th><th class="num" data-sort="c">Density</th><th class="bar"></th><th></th></tr></thead><tbody>${shown.map((o, i) => {
+    const t = o.k.split(' ');
+    const badges = (tgt.has(o.k) ? '<span class="badge tgt">target</span>' : '') +
+      (isHTML && contains(R.doc.title, t, c) ? '<span class="badge" title="In title tag">T</span>' : '') +
+      (isHTML && contains(R.doc.meta, t, c) ? '<span class="badge" title="In meta description">M</span>' : '') +
+      (contains(hJoin, t, c) ? '<span class="badge" title="In a heading">H</span>' : '') +
+      (R.total >= 100 && o.c >= 3 && o.d > hotAt ? '<span class="badge hot">high</span>' : '');
+    return `<tr data-k="${esc(o.k)}" class="${state.sel === o.k ? 'sel' : ''}"><td class="rank">${i + 1}</td><td class="kw">${esc(o.k)}${badges}</td><td class="num">${fmt(o.c)}</td><td class="num">${pct(o.d)}</td><td class="bar"><i style="width:${(o.d / maxD * 100).toFixed(1)}%"></i></td><td class="num"><button class="use" data-use="${esc(o.k)}" title="Set as primary keyword">+ Target</button></td></tr>`;
+  }).join('')}</tbody></table></div>
+  ${rows.length > 50 ? `<div class="more"><button class="chip-btn" id="moreBtn">${state.showAll ? 'Show top 50' : `Show all ${fmt(rows.length)}`}</button></div>` : ''}
+  <div class="note">Click a row to highlight it in the Highlight and Distribution tabs. ${isHTML ? 'Badges: T title, M meta, H heading.' : 'H = appears in a heading.'}</div>`;
+}
+
+const CHECKS = [
+  { id: 'title', label: 'Title tag', tip: 'Front-load it in the first 60 characters.', test: (R, k) => R.doc.title == null ? null : contains(R.doc.title, k.t, R.c) },
+  { id: 'meta', label: 'Meta description', tip: 'Shows in bold in search snippets when it matches the query.', test: (R, k) => R.doc.meta == null ? null : contains(R.doc.meta, k.t, R.c) },
+  { id: 'slug', label: 'URL slug', tip: 'Short slugs that name the topic read best.', test: (R, k) => R.doc.slug == null ? null : contains(R.doc.slug.replace(/[-_/.+]+/g, ' '), k.t, R.c) },
+  { id: 'h1', label: 'H1 / headline', tip: 'One H1 that states the topic plainly.', test: (R, k) => R.doc.headings[1].length ? contains(R.doc.headings[1].join('\n'), k.t, R.c) : (R.doc.kind === 'html' ? false : null) },
+  { id: 'sub', label: 'Subheadings (H2–H6)', tip: 'Once or twice is enough. Every subheading is too many.', test: (R, k) => R.doc.hasSub ? contains([2,3,4,5,6].flatMap(l => R.doc.headings[l]).join('\n'), k.t, R.c) : (R.doc.kind === 'html' ? false : null) },
+  { id: 'first', label: 'First 100 words', tip: 'Confirms the topic early for readers and crawlers.', test: (R, k) => k.pos.some(p => p < 100) },
+  { id: 'last', label: 'Last 100 words', tip: 'A natural mention in the wrap-up helps it hang together.', test: (R, k) => R.total > 150 ? k.pos.some(p => p >= R.total - 100) : null },
+  { id: 'alt', label: 'Image alt text', tip: 'Describe the image. Include the keyword only where it fits.', test: (R, k) => R.doc.alts == null || !R.doc.imgCount ? null : contains(R.doc.alts.join('\n'), k.t, R.c) },
+  { id: 'spread', label: 'Spread through the text', tip: 'Appears in at least 3 of 5 equal parts of the text.', test: (R, k) => R.total < 200 ? null : new Set(k.pos.map(p => Math.min(4, Math.floor(p / R.total * 5)))).size >= 3 }
+];
+function renderPlacement() {
+  const el = $('#p-placement');
+  if (!R.kws.length) { el.innerHTML = '<div class="empty">Add a primary keyword in step 2 to run the 9 placement checks.</div>'; return; }
+  const kws = R.kws.slice(0, 4);
+  const mk = v => v === null ? '<span class="mk na" title="Not available for this input">–</span>' : v ? `<span class="mk y" title="Found">${I.check}</span>` : `<span class="mk n" title="Missing">${I.x}</span>`;
+  const d = R.doc;
+  const nah = d.kind === 'text' ? `<div class="note">"–" means the check needs page HTML or a URL (title, meta, slug, alt text), Markdown subheadings (## H2), or a longer text. Paste the full HTML or use Fetch a URL to run every check.</div>` : '';
+  const len = (s, lo, hi) => s ? `${esc(s)}<em>${s.length} chars${s.length < lo ? ' · short' : s.length > hi ? ' · may be cut off' : ''}</em>` : '<em style="margin:0">Not found</em>';
+  const snippet = d.kind === 'html' ? `<div class="snippet"><span class="eb">Page elements found</span><dl>
+    <dt>Title tag</dt><dd>${len(d.title, 30, 60)}</dd>
+    <dt>Meta description</dt><dd>${len(d.meta, 70, 160)}</dd>
+    <dt>H1</dt><dd>${d.headings[1].length ? esc(d.headings[1][0]) + (d.headings[1].length > 1 ? `<em>${d.headings[1].length} H1s on the page</em>` : '') : '<em style="margin:0">None</em>'}</dd>
+    <dt>URL slug</dt><dd>${d.slug ? esc(d.slug) : '<em style="margin:0">Unknown, paste with a canonical tag or use Fetch a URL</em>'}</dd>
+    <dt>Images</dt><dd>${d.imgCount || 0} found, ${d.alts.length} with alt text</dd></dl></div>` : '';
+  el.innerHTML = `<div style="overflow-x:auto"><table class="tbl pl-tbl"><thead><tr><th>Check</th>${kws.map((k, i) => `<th class="st" title="${esc(k.k)}">${i === 0 && k.primary ? 'Primary' : esc(k.k.length > 16 ? k.k.slice(0, 15) + '…' : k.k)}</th>`).join('')}</tr></thead><tbody>
+    ${CHECKS.map(ch => `<tr style="cursor:default"><td><b style="font-weight:600">${ch.id === 'h1' && d.headline ? 'Headline (first line)' : ch.label}</b><small>${ch.tip}</small></td>${kws.map(k => `<td class="st">${mk(ch.test(R, k))}</td>`).join('')}</tr>`).join('')}
+    <tr style="cursor:default"><td><b style="font-weight:600">Score</b></td>${kws.map(k => { const s = placementScore(R, k); return `<td class="st"><b>${s.pass}/${s.of}</b></td>`; }).join('')}</tr>
+  </tbody></table></div>${nah}${snippet}`;
+}
+
+function renderDistribution() {
+  const el = $('#p-distribution');
+  const opts = R.kws.map((k, i) => ({ v: 'kw' + i, label: k.k, pos: k.pos, len: k.t.length }));
+  if (state.sel) { const o = R.gramIndex[state.sel.split(' ').length].get(state.sel); if (o) opts.unshift({ v: 'sel', label: state.sel + ' (selected)', pos: o.pos, len: state.sel.split(' ').length }); }
+  if (!opts.length) { el.innerHTML = '<div class="empty">Add a target keyword, or click a row in the Keywords tab, to map where it appears.</div>'; return; }
+  let cur = opts.find(o => o.v === state.distSel) || opts[0];
+  const B = 20, buckets = new Array(B).fill(0);
+  cur.pos.forEach(p => buckets[Math.min(B - 1, Math.floor(p / R.total * B))]++);
+  const mx = Math.max(1, ...buckets);
+  let gap = 0, gapAt = 0; const pts = [-1, ...cur.pos, R.total];
+  for (let i = 1; i < pts.length; i++) { const g = pts[i] - pts[i - 1] - 1; if (g > gap) { gap = g; gapAt = pts[i - 1] + 1; } }
+  // sections
+  const d = R.doc; let secs = [];
+  const subs = d.heads.filter(h => h.level >= 2 || (h.level === 1 && !d.headline));
+  if (subs.length >= 2) {
+    const starts = subs.map(h => ({ name: h.text, at: h.at }));
+    if (starts[0].at > 0) starts.unshift({ name: 'Intro (before first heading)', at: 0 });
+    secs = starts.map((s, i) => ({ name: s.name, from: s.at, to: i + 1 < starts.length ? starts[i + 1].at : Infinity }));
+  } else if (R.total >= 100) {
+    const t = R.toks, a = t[Math.floor(R.total * .1)].s, b = t[Math.floor(R.total * .9)].s;
+    secs = [{ name: 'Intro (first 10%)', from: 0, to: a }, { name: 'Body', from: a, to: b }, { name: 'Conclusion (last 10%)', from: b, to: Infinity }];
+  }
+  const rows = secs.map(s => {
+    const idx = R.toks.reduce((acc, t, i) => (t.s >= s.from && t.s < s.to ? (acc.push(i), acc) : acc), []);
+    const words = idx.length; const set = new Set(idx);
+    const uses = cur.pos.filter(p => set.has(p)).length;
+    return { name: s.name, words, uses, d: dens(uses, cur.len, words, R.c.formula) };
+  }).filter(r => r.words > 0);
+  el.innerHTML = `<div class="dist-head"><select class="inp" id="distSel" style="width:auto;max-width:100%">${opts.map(o => `<option value="${o.v}" ${o === cur ? 'selected' : ''}>${esc(o.label)}</option>`).join('')}</select><span class="note" style="margin:0">${cur.pos.length} use${cur.pos.length === 1 ? '' : 's'} across ${fmt(R.total)} words</span></div>
+    <div class="heat" role="img" aria-label="Keyword occurrences from start to end of the text">${buckets.map((b, i) => `<div class="${b ? '' : 'z'}" style="height:${b ? Math.max(8, b / mx * 100) : 3}%" title="Part ${i + 1}/20: ${b} use${b === 1 ? '' : 's'}"></div>`).join('')}</div>
+    <div class="heat-axis"><span>Start</span><span>Middle</span><span>End</span></div>
+    <div class="callout">${cur.pos.length ? `<b>Longest stretch without it:</b> ${fmt(gap)} words (words ${fmt(gapAt + 1)}–${fmt(gapAt + gap)}).${gap > Math.max(300, R.total * .35) ? ' Consider a natural mention in that stretch.' : ''}` : '<b>Not found.</b> This keyword doesn\'t appear in the text yet.'}</div>
+    ${rows.length ? `<div class="sec-tbl"><span class="eb">Density by section</span><div style="overflow-x:auto;margin-top:10px"><table class="tbl"><thead><tr><th>Section</th><th class="num">Words</th><th class="num">Uses</th><th class="num">Density</th></tr></thead><tbody>${rows.map(r => `<tr style="cursor:default"><td class="kw">${esc(r.name)}</td><td class="num">${fmt(r.words)}</td><td class="num">${r.uses}</td><td class="num" style="${r.d > R.c.max + .5 ? 'color:#c52a30;font-weight:600' : ''}">${pct(r.d)}</td></tr>`).join('')}</tbody></table></div>${subs.length < 2 ? '<div class="note">Add headings (Markdown ## or HTML H2s) to get density per section instead of intro, body and conclusion.</div>' : ''}</div>` : ''}`;
+  $('#distSel').onchange = e => { state.distSel = e.target.value; renderDistribution(); };
+}
+
+function renderHighlight() {
+  const el = $('#p-highlight'); const text = R.doc.text; const LIM = 150000;
+  const ranges = [];
+  R.kws.forEach((k, i) => k.pos.forEach(p => ranges.push({ s: R.toks[p].s, e: R.toks[p + k.t.length - 1].e, c: i === 0 ? 'k1' : 'k2', pr: i === 0 ? 0 : 1 })));
+  if (state.sel) { const n = state.sel.split(' ').length; const o = R.gramIndex[n].get(state.sel); o && o.pos.forEach(p => ranges.push({ s: R.toks[p].s, e: R.toks[p + n - 1].e, c: 'k3', pr: 2 })); }
+  ranges.sort((a, b) => a.s - b.s || a.pr - b.pr);
+  let html = '', at = 0;
+  for (const r of ranges) { if (r.s < at || r.s > LIM) continue; html += esc(text.slice(at, r.s)) + `<mark class="${r.c}">${esc(text.slice(r.s, r.e))}</mark>`; at = r.e; }
+  html += esc(text.slice(at, LIM)) + (text.length > LIM ? '\n\n… (preview trimmed, counts use the full text)' : '');
+  const leg = [];
+  if (R.kws[0]) leg.push(`<span><i style="background:rgba(255,107,66,.35);box-shadow:inset 0 -2px 0 #c53a15"></i>${R.kws[0].primary ? 'Primary' : esc(R.kws[0].k)}</span>`);
+  if (R.kws.length > 1) leg.push(`<span><i style="background:rgba(60,140,255,.25);box-shadow:inset 0 -2px 0 #2f6fd6"></i>Secondary</span>`);
+  if (state.sel) leg.push(`<span><i style="background:rgba(255,179,62,.55)"></i>Selected: "${esc(state.sel)}"</span>`);
+  el.innerHTML = (leg.length ? `<div class="legend">${leg.join('')}</div>` : '<div class="note" style="margin:0 0 12px">Add target keywords or click a row in the Keywords tab to highlight it here.</div>') + `<div class="hl">${html}</div>`;
+}
+
+function renderReadability() {
+  const el = $('#p-readability'); const t = R.toks, total = R.total, text = R.doc.text;
+  const sents = total ? t[t.length - 1].sent + 1 : 0;
+  const perSent = new Array(sents).fill(0); t.forEach(x => perSent[x.sent]++);
+  const long = perSent.filter(n => n > 25).length;
+  const words = t.filter(x => /\p{L}/u.test(x.w));
+  const sy = words.reduce((a, x) => a + syl(x.w), 0);
+  const fre = words.length && sents ? 206.835 - 1.015 * (words.length / sents) - 84.6 * (sy / words.length) : 0;
+  const fr = Math.max(0, Math.min(100, fre));
+  const lab = fr >= 90 ? 'Very easy' : fr >= 80 ? 'Easy' : fr >= 70 ? 'Fairly easy' : fr >= 60 ? 'Plain English' : fr >= 50 ? 'Fairly difficult' : fr >= 30 ? 'Difficult' : 'Very difficult';
+  const paras = text.split(/\n\s*\n|\n/).filter(l => l.trim()).length;
+  const avgW = words.length ? words.reduce((a, x) => a + x.w.length, 0) / words.length : 0;
+  const uniq = new Set(t.map(x => x.w.toLowerCase())).size;
+  const mins = m => m < 1 ? Math.max(1, Math.round(m * 60)) + ' sec' : (Math.round(m * 10) / 10) + ' min';
+  el.innerHTML = `<div class="tiles">
+    <div class="tile big"><div><div class="l">Flesch reading ease</div><div class="v">${fr.toFixed(0)}</div><div class="s">${lab}${R.c.lang !== 'en' ? ' · calibrated for English' : ''}</div></div><div class="read-bar"><i style="left:${fr}%"></i></div></div>
+    <div class="tile"><div class="l">Words</div><div class="v">${fmt(total)}</div><div class="s">${fmt(uniq)} unique · ${(uniq / Math.max(1, total) * 100).toFixed(0)}% variety</div></div>
+    <div class="tile"><div class="l">Characters</div><div class="v">${fmt(text.length)}</div><div class="s">${fmt(text.replace(/\s/g, '').length)} without spaces</div></div>
+    <div class="tile"><div class="l">Sentences</div><div class="v">${fmt(sents)}</div><div class="s">${paras} paragraph${paras === 1 ? '' : 's'}</div></div>
+    <div class="tile"><div class="l">Avg. sentence</div><div class="v">${sents ? (total / sents).toFixed(1) : 0}</div><div class="s">words · aim for under 20</div></div>
+    <div class="tile"><div class="l">Long sentences</div><div class="v">${sents ? Math.round(long / sents * 100) : 0}%</div><div class="s">${long} over 25 words</div></div>
+    <div class="tile"><div class="l">Avg. word length</div><div class="v">${avgW.toFixed(1)}</div><div class="s">characters</div></div>
+    <div class="tile"><div class="l">Reading time</div><div class="v">${mins(total / 238)}</div><div class="s">at 238 words/min</div></div>
+    <div class="tile"><div class="l">Speaking time</div><div class="v">${mins(total / 150)}</div><div class="s">at 150 words/min</div></div>
+    <div class="tile"><div class="l">Syllables</div><div class="v">${fmt(sy)}</div><div class="s">${words.length ? (sy / words.length).toFixed(2) : 0} per word</div></div>
+  </div>`;
+}
+
+let cmpDocCache = null;
+function renderCompare() {
+  const out = $('#cmpOut'); const c = R.c;
+  const raw = state.cmpRaw || $('#cmpTxt').value;
+  if (!raw.trim()) { out.innerHTML = '<div class="empty">Add a competitor page above to compare densities.</div>'; return; }
+  const doc = (state.cmpRaw || looksHTML(raw)) ? docFromHTML(raw, state.cmpUrl || null, c.mainOnly) : docFromText(raw);
+  const C = analyse(doc, c);
+  if (!C.total) { out.innerHTML = '<div class="empty">No readable text found in the competitor content.</div>'; return; }
+  const kwRows = R.kws.map(k => { const ck = scoreKw(C, k); return `<tr style="cursor:default"><td class="kw">${esc(k.k)}</td><td class="num">${pct(k.d)} <span style="color:var(--faint)">(${k.count})</span></td><td class="num">${pct(ck.d)} <span style="color:var(--faint)">(${ck.count})</span></td><td class="num">${diff(k.d - ck.d)}</td></tr>`; }).join('');
+  const mine = n => new Map(R.grams[n].map(o => [o.k, o.c]));
+  const m1 = mine(1), m2 = mine(2);
+  const terms = [...C.grams[1].sort((a, b) => b.c - a.c).slice(0, 15).map(o => ({ ...o, n: 1 })), ...C.grams[2].sort((a, b) => b.c - a.c).slice(0, 10).map(o => ({ ...o, n: 2 }))];
+  const tRows = terms.map(o => { const yc = (o.n === 1 ? m1 : m2).get(o.k) || 0; const yd = dens(yc, o.n, R.total, c.formula), td = dens(o.c, o.n, C.total, c.formula); return `<tr data-use-row="${esc(o.k)}" style="cursor:default"><td class="kw">${esc(o.k)}${yc ? '' : '<span class="badge hot">gap</span>'}</td><td class="num">${pct(yd)}</td><td class="num">${pct(td)}</td><td class="num">${diff(yd - td)}</td></tr>`; }).join('');
+  out.innerHTML = `<div class="tiles three" style="margin-bottom:18px"><div class="tile"><div class="l">Your words</div><div class="v">${fmt(R.total)}</div></div><div class="tile"><div class="l">Their words</div><div class="v">${fmt(C.total)}</div><div class="s">${doc.title ? esc(doc.title.slice(0, 60)) : 'competitor'}</div></div><div class="tile"><div class="l">Length gap</div><div class="v">${R.total >= C.total ? '+' : ''}${fmt(R.total - C.total)}</div><div class="s">words vs theirs</div></div></div>
+    ${kwRows ? `<span class="eb">Target keywords</span><div style="overflow-x:auto;margin:10px 0 22px"><table class="tbl"><thead><tr><th>Keyword</th><th class="num">You</th><th class="num">Them</th><th class="num">Diff</th></tr></thead><tbody>${kwRows}</tbody></table></div>` : ''}
+    <span class="eb">Their top terms</span><div style="overflow-x:auto;margin-top:10px"><table class="tbl"><thead><tr><th>Term</th><th class="num">You</th><th class="num">Them</th><th class="num">Diff</th></tr></thead><tbody>${tRows}</tbody></table></div>
+    <div class="note">"gap" = a term the competitor uses often that your text never mentions. Worth a look for missing subtopics.</div>`;
+}
+const diff = v => Math.abs(v) < 0.005 ? '<span style="color:var(--faint)">0.00</span>' : `<span class="${v > 0 ? 'diff-up' : 'diff-dn'}">${v > 0 ? '+' : ''}${v.toFixed(2)}</span>`;
+
+/* ---------- fetch ---------- */
+async function fetchPage(u) {
+  u = u.trim(); if (!/^https?:\/\//i.test(u)) u = 'https://' + u;
+  new URL(u);
+  const tries = [
+    { url: 'https://api.allorigins.win/raw?url=' + encodeURIComponent(u) },
+    { url: 'https://r.jina.ai/' + u, headers: { 'X-Return-Format': 'html' } }
+  ];
+  for (const t of tries) {
+    const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), 20000);
+    try {
+      const r = await fetch(t.url, { headers: t.headers || {}, signal: ctl.signal });
+      clearTimeout(to);
+      if (!r.ok) continue;
+      const body = await r.text();
+      if (body && body.length > 200) return { html: body, url: u };
+    } catch (e) { clearTimeout(to); }
+  }
+  throw new Error('fetch failed');
+}
+$('#urlForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const u = $('#url').value; if (!u.trim()) return;
+  const btn = $('#fetchBtn'), note = $('#srcNote');
+  btn.disabled = true; btn.textContent = 'Fetching…'; note.className = 'note'; note.textContent = 'Fetching the page…';
+  try {
+    const r = await fetchPage(u);
+    state.urlRaw = r.html; state.url = r.url;
+    run();
+    const d = R && R.doc;
+    $('#fetched').className = 'fetched show';
+    $('#fetched').innerHTML = `<b>${esc(d && d.title || r.url)}</b><span>${esc(r.url)} · ${fmt(R ? R.total : 0)} words of ${$('#oMain').checked ? 'main content' : 'visible text'}</span>`;
+    note.className = 'note ok'; note.textContent = 'Page fetched. Placement checks now include the title, meta, slug and alt text.';
+  } catch (err) {
+    note.className = 'note err'; note.textContent = 'Couldn\'t fetch that page. Some sites block automated readers. Open it, copy the text or page source (Ctrl+U), and paste it under "Paste text or HTML".';
+  } finally { btn.disabled = false; btn.textContent = 'Analyse URL'; }
+});
+$('#cmpForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const u = $('#cmpUrl').value; if (!u.trim()) return;
+  const btn = $('#cmpBtn'), note = $('#cmpNote'); btn.disabled = true; btn.textContent = 'Fetching…'; note.className = 'note'; note.textContent = 'Fetching…';
+  try { const r = await fetchPage(u); state.cmpRaw = r.html; state.cmpUrl = r.url; $('#cmpTxt').value = ''; note.className = 'note ok'; note.textContent = 'Fetched ' + r.url; if (R) renderCompare(); }
+  catch (err) { note.className = 'note err'; note.textContent = 'Couldn\'t fetch that page. Paste its text or HTML instead.'; }
+  finally { btn.disabled = false; btn.textContent = 'Fetch'; }
+});
+$('#cmpTxt').addEventListener('input', () => { state.cmpRaw = ''; state.cmpUrl = ''; clearTimeout(tmr); tmr = setTimeout(() => R && renderCompare(), 250); });
+
+/* ---------- exports ---------- */
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2200); }
+async function copyText(s) { try { await navigator.clipboard.writeText(s); return true; } catch (e) { const ta = document.createElement('textarea'); ta.value = s; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (_) {} ta.remove(); return ok; } }
+function shareURL() {
+  const c = cfg(); const p = new URLSearchParams();
+  if ($('#kw1').value.trim()) p.set('k', $('#kw1').value.trim());
+  if ($('#kw2').value.trim()) p.set('s', $('#kw2').value.trim());
+  p.set('min', c.min); p.set('max', c.max); p.set('f', c.formula); p.set('sw', c.stop ? 1 : 0); p.set('lang', c.lang);
+  if (c.variants) p.set('v', 1);
+  if (state.mode === 'url' && state.url) p.set('url', state.url);
+  return location.href.split('#')[0] + '#' + p.toString();
+}
+function report() {
+  const c = R.c; const L = [];
+  L.push('Keyword density report', '='.repeat(22));
+  if (R.doc.title) L.push('Page: ' + R.doc.title);
+  if (state.mode === 'url' && state.url) L.push('URL: ' + state.url);
+  L.push(`Words: ${R.total} · Formula: ${c.formula === 'share' ? 'word share' : 'uses ÷ total words'} · Ideal range ${c.min}–${c.max}%`, '');
+  R.kws.forEach((k, i) => { const s = placementScore(R, k); L.push(`${i === 0 && k.primary ? 'Primary' : 'Secondary'}: "${k.k}" ${pct(k.d)} (${k.count} uses), ${k.st.label}, placement ${s.pass}/${s.of}`); });
+  const p = R.kws[0]; if (p) L.push('Next fix: ' + fixText(p, R).replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>'));
+  for (let n = 1; n <= 3; n++) { L.push('', `Top ${n}-word ${n > 1 ? 'phrases' : 'keywords'}:`); R.grams[n].slice().sort((a, b) => b.c - a.c).slice(0, 10).forEach(o => L.push(`  ${o.k} · ${o.c} · ${pct(dens(o.c, n, R.total, c.formula))}`)); }
+  return L.join('\n');
+}
+function csv() {
+  const q = s => '"' + String(s).replace(/"/g, '""') + '"';
+  const rows = [['Words in phrase', 'Keyword', 'Count', 'Density %'].map(q).join(',')];
+  for (let n = 1; n <= 4; n++) R.grams[n].slice().sort((a, b) => b.c - a.c).forEach(o => rows.push([n, q(o.k), o.c, dens(o.c, n, R.total, R.c.formula).toFixed(3)].join(',')));
+  const blob = new Blob(['﻿' + rows.join('\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'keyword-density.csv'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+$('#panel').addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]'); if (!b || !R) return;
+  const act = b.dataset.act;
+  if (act === 'copy') toast(await copyText(report()) ? 'Report copied' : 'Copy failed');
+  if (act === 'csv') { csv(); toast('CSV downloaded'); }
+  if (act === 'share') toast(await copyText(shareURL()) ? 'Link with your settings copied (your text is not included)' : 'Copy failed');
+  if (act === 'print') window.print();
+});
+
+/* ---------- events ---------- */
+function setMode(m) {
+  state.mode = m;
+  $$('[data-mode]').forEach(b => { b.classList.toggle('on', b.dataset.mode === m); b.setAttribute('aria-selected', b.dataset.mode === m); });
+  $('#modeText').hidden = m !== 'text'; $('#modeUrl').hidden = m !== 'url';
+  const note = $('#srcNote'); note.className = 'note';
+  note.textContent = m === 'url' ? 'Enter any public page. It\'s read through a public page reader, then analysed in your browser.' : 'Text is analysed as you type and saved only in this browser.';
+  run();
+}
+$$('[data-mode]').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+function setTab(t) {
+  state.tab = t;
+  $$('.rtabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  $$('.pane').forEach(p => p.classList.toggle('on', p.id === 'p-' + t));
+  renderTab();
+}
+$$('.rtabs button').forEach(b => b.addEventListener('click', () => setTab(b.dataset.tab)));
+$$('[data-goto]').forEach(a => a.addEventListener('click', () => { setTab(a.dataset.goto); $('#dd').classList.remove('open'); $('#hdr').classList.remove('open'); }));
+$$('#nSeg button').forEach(b => b.addEventListener('click', () => { state.n = +b.dataset.n; state.showAll = false; $$('#nSeg button').forEach(x => x.classList.toggle('on', x === b)); R && renderTable(); }));
+$('#filter').addEventListener('input', e => { state.filter = e.target.value; R && renderTable(); });
+$('#tblBox').addEventListener('click', e => {
+  const use = e.target.closest('[data-use]');
+  if (use) { e.stopPropagation(); $('#kw1').value = use.dataset.use; run(); toast(`"${use.dataset.use}" set as primary keyword`); return; }
+  if (e.target.closest('#moreBtn')) { state.showAll = !state.showAll; renderTable(); return; }
+  const th = e.target.closest('th[data-sort]');
+  if (th) { const k = th.dataset.sort; state.sort = state.sort.key === k ? { key: k, dir: -state.sort.dir } : { key: k, dir: k === 'k' ? 1 : -1 }; renderTable(); return; }
+  const tr = e.target.closest('tr[data-k]');
+  if (tr) { state.sel = state.sel === tr.dataset.k ? null : tr.dataset.k; state.distSel = state.sel ? 'sel' : null; renderTable(); }
+});
+['#txt', '#kw1', '#kw2', '#rMin', '#rMax', '#oIgnore', '#oMin'].forEach(s => $(s).addEventListener('input', runSoon));
+['#oStop', '#oLang', '#oVar', '#oNum', '#oCase', '#oMain', '#oForm'].forEach(s => $(s).addEventListener('change', run));
+function updateSetSum(c) { $('#setSum').textContent = `Stop words ${c.stop ? 'filtered' : 'included'} · ${$('#oLang').selectedOptions[0].text} · ${c.formula === 'share' ? 'word share' : 'uses ÷ words'}`; }
+
+$('#file').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  if (f.size > 8 * 1024 * 1024) { toast('That file is over 8 MB. Paste the text instead.'); return; }
+  const r = new FileReader();
+  r.onload = () => { setMode('text'); $('#txt').value = r.result; run(); toast(`Loaded ${f.name}`); };
+  r.readAsText(f); e.target.value = '';
+});
+$('#clearBtn').addEventListener('click', () => {
+  $('#txt').value = ''; state.urlRaw = ''; state.url = ''; $('#url').value = ''; $('#fetched').className = 'fetched'; state.sel = null;
+  try { localStorage.removeItem('kdc:v1'); } catch (e) {}
+  run(); $('#txt').focus();
+});
+const SAMPLE = `# How to Make Cold Brew Coffee at Home
+
+Cold brew is coffee steeped in cold water for 12 to 24 hours instead of brewed with hot water. The slow, cool extraction pulls less acid and bitterness from the beans, which is why cold brew tastes smoother and sweeter than iced coffee. You don't need special gear: a jar, a strainer and coarse ground coffee will do.
+
+## The best coffee to water ratio
+
+For a cold brew concentrate, start with a 1:4 coffee to water ratio by weight, for example 200 grams of coffee to 800 grams of water. For ready-to-drink cold brew, use a 1:8 ratio instead. A concentrate keeps longer in the fridge and lets you dilute each glass to taste with water or milk.
+
+## Step-by-step method
+
+Grind the beans coarse, about the texture of raw sugar. Fine grounds over-extract and make the brew muddy. Stir the coffee into cold, filtered water until every ground is wet, cover the jar, and leave it at room temperature or in the fridge. Steep for 12 hours for a lighter cup or up to 24 hours for a bold one.
+
+Strain through a fine mesh sieve lined with a paper filter. Pour slowly so the sediment stays behind. Your cold brew concentrate will keep for up to two weeks in a sealed bottle in the fridge.
+
+## Serving ideas
+
+Pour the concentrate over ice and top it with an equal amount of water. Add oat milk and a little maple syrup for a cafe-style drink, or shake it with ice for a frothy cold brew. Because cold brew is low in acid, many people find it easier on the stomach than hot coffee.
+
+## Common mistakes
+
+The most common mistakes are grinding too fine, steeping for too short a time, and skipping the second filter. Get those three right and homemade cold brew rivals anything from a coffee shop.`;
+function loadSample() {
+  setMode('text'); $('#txt').value = SAMPLE; $('#kw1').value = 'cold brew'; $('#kw2').value = 'cold brew concentrate, coffee to water ratio';
+  run(); $('#checker').scrollIntoView({ behavior: 'smooth' });
+}
+$('#sampleBtn').addEventListener('click', loadSample);
+
+// header
+$('#dd > button').addEventListener('click', e => { e.stopPropagation(); const dd = $('#dd'); dd.classList.toggle('open'); e.currentTarget.setAttribute('aria-expanded', dd.classList.contains('open')); });
+document.addEventListener('click', e => { if (!e.target.closest('#dd')) $('#dd').classList.remove('open'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { $('#dd').classList.remove('open'); $('#hdr').classList.remove('open'); } });
+$('#menuBtn').addEventListener('click', () => $('#hdr').classList.toggle('open'));
+$$('.nav > a').forEach(a => a.addEventListener('click', () => $('#hdr').classList.remove('open')));
+
+// mobile chip visibility
+if ('IntersectionObserver' in window) {
+  new IntersectionObserver(es => es.forEach(en => { panelVisible = en.isIntersecting; chipVis(); }), { threshold: 0.15 }).observe($('#panel'));
+  new IntersectionObserver(es => es.forEach(en => { checkerVisible = en.isIntersecting; chipVis(); })).observe($('#checker'));
+}
+
+/* ---------- persistence ---------- */
+let saveT;
+function save() {
+  clearTimeout(saveT);
+  saveT = setTimeout(() => { try { localStorage.setItem('kdc:v1', JSON.stringify({ t: $('#txt').value.slice(0, 500000), k: $('#kw1').value, s: $('#kw2').value })); } catch (e) {} }, 400);
+}
+function restore() {
+  const h = new URLSearchParams(location.hash.slice(1));
+  try { const s = JSON.parse(localStorage.getItem('kdc:v1') || 'null'); if (s) { $('#txt').value = s.t || ''; $('#kw1').value = s.k || ''; $('#kw2').value = s.s || ''; } } catch (e) {}
+  if (h.has('k')) $('#kw1').value = h.get('k');
+  if (h.has('s')) $('#kw2').value = h.get('s');
+  if (h.has('min')) $('#rMin').value = h.get('min');
+  if (h.has('max')) $('#rMax').value = h.get('max');
+  if (h.has('f')) $('#oForm').value = h.get('f') === 'share' ? 'share' : 'occ';
+  if (h.has('sw')) $('#oStop').checked = h.get('sw') !== '0';
+  if (h.has('lang') && STOP[h.get('lang')]) $('#oLang').value = h.get('lang');
+  if (h.has('v')) $('#oVar').checked = true;
+  if (h.has('url')) { setMode('url'); $('#url').value = h.get('url'); $('#urlForm').requestSubmit(); return; }
+  run();
+}
+restore();
+})();
+</script>
+</body>
+</html>
